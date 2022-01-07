@@ -1,24 +1,29 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Post, Comment, Vote
-from .forms import AddPostForm, EditPostForm, AddCommentForm, AddReplyForm
-from django.contrib import messages
 from django.utils.text import slugify
+
+from django.contrib import messages
+# from django.views import View
 from django.contrib.auth.decorators import login_required
+# from django.contrib.auth.mixins import LoginRequiredMixin
 # import redis
 # from django.conf import settings
 
+from .models import Post, Comment, Vote
+from .forms import AddPostForm, EditPostForm, AddCommentForm, AddReplyForm
 
 
 def all_posts(request):
 	posts = Post.objects.all()
-	return render(request, 'posts/all_posts.html', {'posts':posts})
+	return render(request, 'posts/all_posts.html', {'posts': posts})
 
-#redis_con = redis.Redis(settings.REDIS_HOST, settings.REDIS_PORT, settings.REDIS_DB)
+# redis_con = redis.Redis(settings.REDIS_HOST, settings.REDIS_PORT, settings.REDIS_DB)
+
 def post_detail(request, year, month, day, slug):
 	post = get_object_or_404(Post, created__year=year, created__month=month, created__day=day, slug=slug)
 	comments = Comment.objects.filter(post=post, is_reply=False)
 	reply_form = AddReplyForm()
-	#redis_con.hsetnx('post_views', post.id, 0)
+	# redis_con.hsetnx('post_views', post.id, 0)
+
 	rviews='note' 	#rviews = redis_con.hincrby('post_views', post.id)
 	can_like = False
 	if request.user.is_authenticated:
@@ -35,6 +40,31 @@ def post_detail(request, year, month, day, slug):
 	else:
 		form = AddCommentForm()
 	return render(request, 'posts/post_detail.html', {'post':post, 'comments':comments, 'form':form, 'reply':reply_form, 'can_like':can_like, 'rviews':rviews})
+
+
+# class AddPost(LoginRequiredMixin, View ):
+# 	form_class = AddPostForm
+# 	template_name = 'posts/add_post.html'
+#
+# 	def get(self, request, user_id):
+# 		if request.user.id != user_id:
+# 			return redirect('posts:all_posts')
+# 		form = self.form_class
+# 		return render(request, self.template_name, {'form': form})
+#
+# 	def post(self, request, user_id):
+# 		if request.user.id != user_id:
+# 			return redirect('posts:all_posts')
+# 		if self.form_class.is_valid():
+# 			new_post = self.form_class.save(commit=False)
+# 			new_post.user = request.user
+# 			new_post.slug = slugify(self.form_class.cleaned_data['body'][:30])
+# 			new_post.save()
+# 			messages.success(request, 'your post submitted', 'success')
+# 			return redirect('accounts:dashboard', user_id)
+
+
+
 
 @login_required
 def add_post(request, user_id):
