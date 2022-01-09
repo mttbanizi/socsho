@@ -14,6 +14,7 @@ class EditPostForm(forms.ModelForm):
 		fields = ('body',)
 
 
+
 class AddCommentForm(forms.ModelForm):
 	class Meta:
 		model = Comment
@@ -34,3 +35,4 @@ class AddReplyForm(forms.ModelForm):
 		class Meta:
 			model = Comment
 			fields = ('body',)
+
