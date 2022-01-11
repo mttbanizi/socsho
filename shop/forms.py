@@ -3,8 +3,10 @@ from .models import Product, Category
 
 class AddProductForm(forms.Form):
     category_choice= Category.objects.all()
-    category = forms.ChoiceField(coices=category_choice)
-    name = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}))
-    image = forms.FileInput(upload_to='products/%Y/%m/%d/')
-    description = forms.Textarea()
-    price = forms.NumberInput()
+    category = forms.ModelChoiceField(queryset=category_choice, widget=forms.Select(attrs={'class': 'form-control'}))
+    name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    slug = forms.SlugField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    image = forms.ImageField()
+    class Meta:
+         model = Product
+         fields = ('description', 'price')
