@@ -7,6 +7,8 @@ class AddProductForm(forms.Form):
     name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     slug = forms.SlugField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     image = forms.ImageField()
+
     class Meta:
-         model = Product
-         fields = ('description', 'price')
+        model = Product
+        fields = ('description', 'price')
+

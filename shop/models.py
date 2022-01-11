@@ -22,7 +22,10 @@ class Category(models.Model): # categories
 		return reverse('shop:category_filter', args=[self.slug,])
 
 
+
 class Product(models.Model):
+
+
 	user = models.ForeignKey(User, on_delete=models.CASCADE, default="")
 	category = models.ManyToManyField(Category, related_name='products')
 	name = models.CharField(max_length=200)
