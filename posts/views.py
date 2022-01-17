@@ -70,7 +70,7 @@ def post_detail(request, year, month, day, slug):
 def add_post(request, user_id):
 	if request.user.id == user_id:
 		if request.method == 'POST':
-			form = AddPostForm(request.POST)
+			form = AddPostForm(request.POST, request.FILES)
 			if form.is_valid():
 				new_post = form.save(commit=False)
 				new_post.user = request.user

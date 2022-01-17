@@ -7,7 +7,46 @@
     <p>{{ product.description }}</p><br/><br/>
     <form action="{% url 'cart:cart_add' product.id %}" method="post">
         {% csrf_token %}
-        {{ form }}
+        {{ form_cart }}
         <input type="submit" value="Add to cart">
     </form>
+
+
+    {% if request.user.is_authenticated %}
+        <a href="{% url 'shop:product_like' product.id %}" class="btn btn-primary {% if can_like %}disabled {% endif %} col-md-2">Like {{ product.likes_count }}</a>
+    {% endif %}
+    <br/><br/><br/>
+
+    {% if request.user.is_authenticated %}
+    <form action="" method="post" novalidate class="col-md-6">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Send" class="btn btn-primary">
+    </form>
+    {% else %}
+        <p>only logged in users can send comments</p>
+    {% endif %}<br/><br/><br/>
+
+    {% for comment in comments %}
+        <div class="card bg-dark text-white">
+            <p class="card-header">{{ comment.user }} <a href="">reply</a></p>
+            <p class="card-body">{{ comment.body }}</p>
+            {% if request.user.is_authenticated %}
+            <div class="card-body" style="display:none" id="reply_id">
+                <form action="{% url 'shop:add_reply' product.id comment.id %}" method="post">
+                    {% csrf_token %}
+                    {{ reply.as_p }}
+                    <input type="submit" value="Send">
+                </form>
+            </div>
+            {% else %}
+                <p>you have to login to send reply</p>
+            {% endif %}
+            {% for reply in comment.rcomment.all %}
+                <p class="bg-primary text-white p-3 m-5">{{ reply.user }} <br/> {{ reply.body }}</p>
+            {% endfor %}
+        </div><br/>
+    {% empty %}
+        <p>There is no comment</p>
+    {% endfor %}
 {% endblock %}

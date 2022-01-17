@@ -10,6 +10,8 @@
 {% block content %}
     {% if self_dash %}
     <a href="{% url 'posts:add_post' request.user.id %}">Add post</a>
+    <a href="{% url 'shop:add_product' request.user.id %}">Add Product</a>
+
 
     {% endif %}
     <h4 class="text-center">{{ user.username|capfirst }}</h4>

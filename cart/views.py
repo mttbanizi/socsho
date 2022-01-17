@@ -2,6 +2,7 @@ from .cart import Cart
 from shop.models import Product
 from .forms import CartAddForm
 from django.views.decorators.http import require_POST
+from django.shortcuts import render, get_object_or_404, redirect
 
 
 def detail(request):

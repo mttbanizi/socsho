@@ -1,12 +1,22 @@
 {% extends 'base.html' %}
+{% load thumbnail %}
 
 {% block title %} Home {% endblock %}
 
 {% block content %}
     {% for post in posts %}
-        <div class="card">
-            <p class="card-header"><a href="{% url 'accounts:dashboard' post.user.id %}">{{ post.user }}</a></p>
-            <p class="card-body"><a href="{{ post.get_absolute_url }}">{{ post.body }}</a></p>
+        <div class="card" style="width: 18rem; display:flex; flex_wrap:wrap; ">
+            {% thumbnail post.image "300x300" as img %}
+                <img src="{{ img.url }}" class="card-img-top">
+            {% endthumbnail %}
+            <p class="card-body">
+                <a href="{% url 'accounts:dashboard' post.user.id %}">
+                    {{ post.user }}:
+                </a>
+                <a style="color:darkgrey" href="{{ post.get_absolute_url }}">
+                    {{ post.body }}
+                </a>
+            </p>
         </div><br/>
     {% endfor %}
 {% endblock %}

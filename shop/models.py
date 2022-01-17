@@ -45,3 +45,35 @@ class Product(models.Model):
 
 	def get_absolute_url(self):
 		return reverse('shop:product_detail', args=[self.slug,])
+
+	def likes_count(self):
+		return self.prodvote.count()
+
+	def user_can_like(self, user):
+		user_like = user.produservote.all()
+		qs = user_like.filter(product=self)
+		if qs.exists():
+			return True
+		return False
+
+class ProdComment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='uProdComment')
+    product=models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=True, related_name='PrProdComment')
+    reply = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='rProdComment')
+    is_reply = models.BooleanField(default=False)
+    body = models.TextField(max_length=400)
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.user} - {self.body[:30]}'
+
+    class Meta:
+        ordering = ('-created',)
+
+
+class ProdVote(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='prodvote')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='produservote')
+
+    def __str__(self):
+        return f'{self.user} liked {self.post}'

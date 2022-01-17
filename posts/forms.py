@@ -3,9 +3,11 @@ from .models import Post, Comment
 
 
 class AddPostForm(forms.ModelForm):
+	image = forms.ImageField()
+
 	class Meta:
 		model = Post
-		fields = ('body',)
+		fields = ('body', 'image')
 
 
 class EditPostForm(forms.ModelForm):
