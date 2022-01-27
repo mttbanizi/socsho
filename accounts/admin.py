@@ -20,7 +20,10 @@ class UserAdmin(BaseUserAdmin):
 			'fields':('full_name', 'email', 'password1', 'password2')
 		}),
 		( 'profile',{
-			'fielsd':('age','bio', 'phone')
+			'fields':('age','bio', 'phone', 'status', 'activity')
+		}),
+		( 'profile photo',{
+			'fields':('image',)
 		})
 
 

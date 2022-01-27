@@ -13,6 +13,10 @@ class User(AbstractBaseUser):
 	bio = models.TextField(null=True, blank=True)
 	age = models.PositiveSmallIntegerField(null=True, blank=True)
 	phone = models.PositiveIntegerField(null=True, blank=True)
+	image = models.ImageField(upload_to='products/%Y/%m/%d/')
+	status = models.CharField(max_length=300, null=True, blank=True)
+	activity= models.CharField(max_length=100, null=True, blank=True)
+
 	objects = MyUserManager()
 	USERNAME_FIELD = 'email'
 	REQUIRED_FIELDS = ['full_name']

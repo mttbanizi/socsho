@@ -86,12 +86,8 @@ WSGI_APPLICATION = 'socsho.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'socsho',
-        'USER': 'socsho',
-        'PASSWORD': '7618326',
-
-        'HOST': '127.0.0.1',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'mydatabase',
     }
 }
 
