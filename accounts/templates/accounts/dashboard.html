@@ -1,26 +1,41 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load thumbnail %}
+{% csrf_token %}
 
 {% block title %} {{ user.username }} Profile {% endblock %}
 
 {% block js_files %}
-<script src="{% static 'accounts/js/script.js' %}"></script>
+    <script src="{% static 'accounts/js/scripts.js' %}"></script>
 {% endblock %}
 
 {% block content %}
     {% if self_dash %}
-    <a href="{% url 'posts:add_post' request.user.id %}">Add post</a>
-    <a href="{% url 'shop:add_product' request.user.id %}">Add Product</a>
-
-
+        <a href="{% url 'posts:add_post' request.user.id %}">Add post</a>
+        <a href="{% url 'shop:add_product' request.user.id %}">Add Product</a>
+        <a href="{% url 'accounts:profile_update' request.user.id %}">Edit Profile</a>
     {% endif %}
+
+    <div class="card" style="width: 18rem; display:inline-block">
+        {% thumbnail user.image "300x300" as img %}
+            <a href="{% url 'accounts:show_photo' user.id %}">
+                <img  src="{{ img.url }}" class="card-img-top">
+            </a>
+        {% endthumbnail %}        
+    </div>
+
     <h4 class="text-center">{{ user.username|capfirst }}</h4>
-    <p class="text-center">{{ user.profile.bio }}</p>
+    <p class="text-center">{{ user.bio }}</p>
+    {% if user.age %}
+        <p class="text-center">{{ user.age }} years old</p>
+    {% endif %}
+
+    
 
     {% if request.user.id != user.id and not is_following %}
-    <button id="following_btn" data-id="{{ user.id }}" style="display:block" class="btn btn-primary text-center mx-auto">follow</button>
+        <button id="following_btn" data-id="{{ user.id }}" style="display:block" class="btn btn-primary text-center mx-auto">follow</button>
     {% elif request.user.id != user.id and is_following %}
-    <button id="following_btn" data-id="{{ user.id }}" style="display:block" class="btn btn-warning text-center mx-auto">unfollow</button>
+        <button id="following_btn" data-id="{{ user.id }}" style="display:block" class="btn btn-warning text-center mx-auto">unfollow</button>
     {% endif %}
 
     <br/><br/><br/>

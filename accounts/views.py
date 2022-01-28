@@ -1,11 +1,19 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import UserLoginForm, UserRegistrationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.views import View
+from django.views.generic.edit import UpdateView
+from django.views.generic import DetailView
+from django.urls import reverse
+from django.http import JsonResponse
+from django.contrib.auth.mixins import LoginRequiredMixin
+import os
 
 from django.contrib import messages
 from .models import User, Relation
 from posts.models import Post
+from .forms import UserLoginForm, UserRegistrationForm, ProfileShowPhoto
+
 
 
 def user_login(request):
@@ -53,10 +61,62 @@ def user_dashboard(request, user_id):
 	is_following = False
 	print('******************************************************')
 	print (user_id)
-	relation = Relation.objects.filter(from_user=request.user, to_user=user)
-	if relation.exists():
-		is_following = True
+	if request.user is not None :
+		
+		relation = Relation.objects.filter(from_user=request.user, to_user=user)
+		if relation.exists():
+			is_following = True
 	if request.user.id == user_id:
-		self_dash = True
+			self_dash = True
 	return render(request, 'accounts/dashboard.html', {'user':user, 'posts':posts, 'self_dash':self_dash, 'is_following':is_following})
 
+
+class ProfileUpdate(UpdateView):
+	model = User
+	fields = ('full_name', 'bio', 'age', 'status')
+	template_name = 'accounts/update_profile.html'
+	
+	def get_success_url(self):
+           pk = self.kwargs["pk"]
+           return reverse("accounts:dashboard", kwargs={"user_id": pk})
+
+
+@login_required
+def follow(request):
+	if request.method == 'POST':
+		user_id = request.POST['user_id']
+		following = get_object_or_404(User, pk=user_id)
+		check_relation = Relation.objects.filter(from_user=request.user, to_user=following)
+		if check_relation.exists():
+			return JsonResponse({'status':'exists'})			
+		else:
+			Relation(from_user=request.user, to_user=following).save()
+			return JsonResponse({'status':'ok'})
+			
+
+
+@login_required
+def unfollow(request):
+	if request.method == 'POST':
+		user_id = request.POST['user_id']
+		following = get_object_or_404(User, pk=user_id)
+		check_relation = Relation.objects.filter(from_user=request.user, to_user=following)
+		if check_relation.exists():
+			check_relation.delete()
+			return JsonResponse({'status':'ok'})
+		else:
+			return JsonResponse({'status':'notexists'})
+
+def  show_photo(request, pk):
+	user = get_object_or_404(User, pk= pk)
+	if request.method == 'POST':
+		form = ProfileShowPhoto(request.POST,request.FILES, instance= user)
+		if form.is_valid():
+			image_path = user.image.path
+			if os.path.exists(image_path):
+				os.remove(image_path)
+			form.save()
+			messages.success(request, 'your image updated successfully', 'info')
+		return redirect('accounts:show_photo', user.id)
+	form = ProfileShowPhoto(instance= user)
+	return render(request,'accounts/show_photo.html', {'user': user, 'form': form} )

@@ -1,9 +1,13 @@
+from email.policy import default
 from django.db import models
 
 
 from django.contrib.auth.models import AbstractBaseUser
 from .managers import MyUserManager
 
+def user_directory_path(instance, filename):
+    # file will be uploaded to MEDIA_ROOT / user_<id>/<filename>
+    return 'user_{0}/{1}'.format(instance.user.id, filename)
 
 class User(AbstractBaseUser):
 	email = models.EmailField(max_length=100, unique=True)
@@ -13,7 +17,7 @@ class User(AbstractBaseUser):
 	bio = models.TextField(null=True, blank=True)
 	age = models.PositiveSmallIntegerField(null=True, blank=True)
 	phone = models.PositiveIntegerField(null=True, blank=True)
-	image = models.ImageField(upload_to='products/%Y/%m/%d/')
+	image = models.ImageField(upload_to='user/%Y/%m/%d/', default='profile.jpg' )
 	status = models.CharField(max_length=300, null=True, blank=True)
 	activity= models.CharField(max_length=100, null=True, blank=True)
 
@@ -23,6 +27,9 @@ class User(AbstractBaseUser):
 
 	def __str__(self):
 		return self.email
+
+	def image_path(self):
+		return '/user/'+str(self.id)
 
 	def has_perm(self, perm, obj=None):
 		return True

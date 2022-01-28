@@ -47,8 +47,11 @@ class UserRegistrationForm(forms.Form):
 	password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}))
 
 
-
-
+class ProfileShowPhoto(forms.ModelForm):
+	image = forms.ImageField()
+	class Meta:
+		model = User
+		fields =( 'image',)
 
 
 
