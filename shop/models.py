@@ -76,4 +76,4 @@ class ProdVote(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='produservote')
 
     def __str__(self):
-        return f'{self.user} liked {self.post}'
+        return f'{self.user} liked {self.product}'

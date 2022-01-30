@@ -39,7 +39,7 @@ def product_detail(request, slug):
 			messages.success(request, 'you comment submitted successfully')
 	else:
 		form = AddProductCommentForm()
-	return render(request, 'shop/product_detail.html', {'product': product, 'form_cart': form_cart, 'comments': comments, 'form': form})
+	return render(request, 'shop/product_detail.html', {'product': product, 'form_cart': form_cart, 'comments': comments, 'form': form, 'can_like': can_like})
 
 
 class AddProduct(LoginRequiredMixin, View):
@@ -56,7 +56,7 @@ class AddProduct(LoginRequiredMixin, View):
 		if form.is_valid():
 			new_product=form.save(commit=False)
 			new_product.user=request.user
-			new_product.slug = slugify(form.cleaned_data['body'][:30])
+			new_product.slug = slugify(form.cleaned_data['description'][:30])
 			new_product.save()
 			messages.success(request, 'your image updated successfully', 'info')
 			return redirect('shop:home')
