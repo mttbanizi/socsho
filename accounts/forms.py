@@ -1,5 +1,5 @@
 from django import forms
-from .models import User
+from .models import ProfilePhoto, User
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
 
@@ -50,7 +50,7 @@ class UserRegistrationForm(forms.Form):
 class ProfileShowPhoto(forms.ModelForm):
 	image = forms.ImageField()
 	class Meta:
-		model = User
+		model = ProfilePhoto
 		fields =( 'image',)
 
 

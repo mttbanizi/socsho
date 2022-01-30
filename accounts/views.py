@@ -10,7 +10,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 import os
 
 from django.contrib import messages
-from .models import User, Relation
+from .models import User, Relation, ProfilePhoto
 from posts.models import Post
 from .forms import UserLoginForm, UserRegistrationForm, ProfileShowPhoto
 
@@ -110,13 +110,20 @@ def unfollow(request):
 def  show_photo(request, pk):
 	user = get_object_or_404(User, pk= pk)
 	if request.method == 'POST':
-		form = ProfileShowPhoto(request.POST,request.FILES, instance= user)
+		form = ProfileShowPhoto(request.POST,request.FILES)
 		if form.is_valid():
-			image_path = user.image.path
-			if os.path.exists(image_path):
-				os.remove(image_path)
-			form.save()
+			# image_path = user.image.path
+			# if os.path.exists(image_path):
+			# 	os.remove(image_path)
+			
+			pfm=form.save(commit=False)
+			pfm.user=user
+			pfm.save()
+			profile_photo=ProfilePhoto.objects.filter(user=user).last()
+			user.image=profile_photo.image
+			user.save()
 			messages.success(request, 'your image updated successfully', 'info')
+
 		return redirect('accounts:show_photo', user.id)
-	form = ProfileShowPhoto(instance= user)
+	form = ProfileShowPhoto()
 	return render(request,'accounts/show_photo.html', {'user': user, 'form': form} )

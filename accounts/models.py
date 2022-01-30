@@ -41,7 +41,10 @@ class User(AbstractBaseUser):
 	def is_staff(self):
 		return self.is_admin
 
-
+class ProfilePhoto(models.Model):
+	user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='uprofilephoto')
+	image = models.ImageField(upload_to='user/%Y/%m/%d/', default='profile.jpg' )
+	created = models.DateTimeField(auto_now_add=True)
 
 class Relation(models.Model):
 	from_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='follower')
