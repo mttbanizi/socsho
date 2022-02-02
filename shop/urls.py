@@ -13,5 +13,6 @@ urlpatterns = [
 	path('<slug:slug>/', views.product_detail, name='product_detail'),
 	path('add_reply/<int:product_id>/<int:comment_id>/', views.add_reply, name='add_reply'),
 	path('product_like/<int:product_id>/', views.product_like, name='product_like'),
+	path('product_dislike/<int:product_id>/', views.product_dislike, name='product_dislike'),
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -138,6 +138,14 @@ def post_like(request, post_id):
 	return redirect('posts:post_detail', post.created.year, post.created.month, post.created.day, post.slug)
 
 
+@login_required
+def post_dislike(request, post_id):
+	post = get_object_or_404(Post, id=post_id)
+	dislike = Vote.objects.filter(post=post, user=request.user).delete()
+	messages.success(request, 'you disliked successfully', 'warning')
+	return redirect('posts:post_detail', post.created.year, post.created.month, post.created.day, post.slug)
+
+
 
 
 

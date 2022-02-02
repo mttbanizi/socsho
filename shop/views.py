@@ -39,7 +39,8 @@ def product_detail(request, slug):
 			messages.success(request, 'you comment submitted successfully')
 	else:
 		form = AddProductCommentForm()
-	return render(request, 'shop/product_detail.html', {'product': product, 'form_cart': form_cart, 'comments': comments, 'form': form, 'can_like': can_like})
+		reply_form=AddReplyProductForm()
+	return render(request, 'shop/product_detail.html', {'product': product,'reply_form': reply_form, 'form_cart': form_cart, 'comments': comments, 'form': form, 'can_like': can_like})
 
 
 class AddProduct(LoginRequiredMixin, View):
@@ -86,3 +87,8 @@ def product_like(request, product_id):
 	messages.success(request, 'you liked successfully', 'success')
 	return redirect('shop:product_detail', product.slug)
 
+def product_dislike(request, product_id):
+	product = get_object_or_404(Product, id=product_id)
+	dislike = ProdVote.objects.filter(product=product, user=request.user).last().delete()
+	messages.success(request, 'you disliked successfully', 'warning')
+	return redirect('shop:product_detail', product.slug)
