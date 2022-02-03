@@ -109,6 +109,9 @@ def unfollow(request):
 
 def  show_photo(request, pk):
 	user = get_object_or_404(User, pk= pk)
+	profile_photos=ProfilePhoto.objects.filter(user=user)
+	print ('*'*50)
+	print (profile_photos)
 	if request.method == 'POST':
 		form = ProfileShowPhoto(request.POST,request.FILES)
 		if form.is_valid():
@@ -126,4 +129,4 @@ def  show_photo(request, pk):
 
 		return redirect('accounts:show_photo', user.id)
 	form = ProfileShowPhoto()
-	return render(request,'accounts/show_photo.html', {'user': user, 'form': form} )
+	return render(request,'accounts/show_photo.html', {'user': user, 'form': form, 'profile_photos': profile_photos} )
