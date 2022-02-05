@@ -39,9 +39,11 @@
     
     /* Slideshow container */
     .slideshow-container {
-      max-width: 60%;
+      max-width: 500px;
+      height: 500px;
       position: relative;
       margin: auto;
+      overflow: hidden;
     }
     
     /* Next & previous buttons */
@@ -110,9 +112,9 @@
     /* Fading animation */
     .fade {
       -webkit-animation-name: fade;
-      -webkit-animation-duration: 1.5s;
+      -webkit-animation-duration: 5s;
       animation-name: fade;
-      animation-duration: 1.5s;
+      animation-duration: 5s;
     }
     
     @-webkit-keyframes fade {
@@ -136,26 +138,24 @@
     
     
     <div class="slideshow-container">
-    {% for  profile_photo in profile_photos %}
-    <div class="mySlides fade">
-      <div class="numbertext">1 / {{profile_photos.count}} </div>
-      <img src=" {{profile_photo.image.url}} " style="width:100%">
-      <div class="text">Caption Text</div>
-    </div>
-    {% endfor %}
-   
-    
-    <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
-    <a class="next" onclick="plusSlides(1)">&#10095;</a>
+        {% for  profile_photo in profile_photos %}
+            <div class="mySlides ">
+                <div class="numbertext">1 / {{profile_photos.count}} </div>
+                <a href="{% url 'accounts:update_photo' user.id  profile_photo.id %}"><img src=" {{profile_photo.image.url}} " style=" height:auto; width:100%;"></a>
+                <div class="text">Caption Text</div>
+            </div>
+        {% endfor %}
+        <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+        <a class="next" onclick="plusSlides(1)">&#10095;</a>
     
     </div>
     <br>
     
     <div style="text-align:center">
-       
-      <span class="dot" onclick="currentSlide(1)"></span> 
-      <span class="dot" onclick="currentSlide(2)"></span> 
-      <span class="dot" onclick="currentSlide(3)"></span> 
+        {% for  profile_photo in profile_photos %}
+            <span class="dot" onclick="currentSlide('{{ forloop.counter }}' )"></span> 
+        {% endfor %}
+      
     </div>
     
     

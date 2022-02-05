@@ -130,3 +130,10 @@ def  show_photo(request, pk):
 		return redirect('accounts:show_photo', user.id)
 	form = ProfileShowPhoto()
 	return render(request,'accounts/show_photo.html', {'user': user, 'form': form, 'profile_photos': profile_photos} )
+
+def update_photo(request, user_id, image_id):
+	user = get_object_or_404(User, pk= user_id)
+	profile_photo=get_object_or_404(ProfilePhoto,pk=image_id)
+	user.image=profile_photo.image
+	user.save()
+	return redirect('accounts:dashboard', user.id)
