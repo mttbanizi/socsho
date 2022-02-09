@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.text import slugify
 # project models and forms
 from cart.forms import CartAddForm
-from .forms import AddProductForm, AddProductCommentForm, AddReplyProductForm
+from .forms import AddProductForm, AddProductCommentForm, AddReplyProductForm, AddProductPhotoForm
 from accounts.models import User
 from .models import  ProdComment, ProdVote, Category, Product
 
@@ -39,7 +39,7 @@ def product_detail(request, slug):
 			messages.success(request, 'you comment submitted successfully')
 	else:
 		form = AddProductCommentForm()
-		reply_form=AddReplyProductForm()
+	reply_form=AddReplyProductForm()
 	return render(request, 'shop/product_detail.html', {'product': product,'reply_form': reply_form, 'form_cart': form_cart, 'comments': comments, 'form': form, 'can_like': can_like})
 
 
@@ -49,22 +49,32 @@ class AddProduct(LoginRequiredMixin, View):
 
 	def get(self, request, user_id):
 		user = get_object_or_404(User, pk=user_id)
+		product_image_form = AddProductPhotoForm()
 		messages.success(request, user_id)
-		return render(request, self.template_name, {'user': user, 'form': self.form_class})
+		return render(request, self.template_name, {'user': user, 'form': self.form_class, 'product_image_form':product_image_form})
 
 	def post(self, request, *args, **kwargs):
-		form = self.form_class(request.POST, request.FILES)
+		form = self.form_class(request.POST)
+		product_image_form = AddProductPhotoForm(request.POST, request.FILES)
 		if form.is_valid():
 			new_product=form.save(commit=False)
 			new_product.user=request.user
 			new_product.slug = slugify(form.cleaned_data['description'][:30])
 			new_product.save()
+			if product_image_form.is_valid():
+				new_Photo= product_image_form.save(commit=False)
+				new_Photo.product= new_product
+				new_Photo.save()
+				new_product.image=new_Photo.image
+				new_product.save()
+			
 			messages.success(request, 'your image updated successfully', 'info')
 			return redirect('shop:home')
+		
 		return  redirect('shop:home' )
 
-def add_reply(request, post_id, comment_id):
-	product = get_object_or_404(Product, id=post_id)
+def product_reply(request, product_id, comment_id):
+	product = get_object_or_404(Product, id=product_id)
 	comment = get_object_or_404(ProdComment, pk=comment_id)
 	if request.method == 'POST':
 		form = AddReplyProductForm(request.POST)
@@ -76,7 +86,7 @@ def add_reply(request, post_id, comment_id):
 			reply.is_reply = True
 			reply.save()
 			messages.success(request, 'your reply submitted successfully', 'success')
-	return redirect('posts:product_detail', product.created.year, product.created.month, product.created.day, product.slug)
+	return redirect('shop:product_detail',  product.slug)
 
 
 @login_required

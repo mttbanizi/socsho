@@ -3,7 +3,7 @@
 {% load thumbnail %}
 {% csrf_token %}
 
-{% block title %} {{ user.username }} Profile {% endblock %}
+{% block user_email %} {{ request.user.email }} Profile {% endblock %}
 
 {% block js_files %}
     <script src="{% static 'accounts/js/scripts.js' %}"></script>
@@ -11,12 +11,14 @@
 
 {% block content %}
     {% if self_dash %}
-        <a href="{% url 'posts:add_post' request.user.id %}">Add post</a>
-        <a href="{% url 'shop:add_product' request.user.id %}">Add Product</a>
-        <a href="{% url 'accounts:profile_update' request.user.id %}">Edit Profile</a>
+        <table>
+            <li><a href="{% url 'posts:add_post' request.user.id %}">Add post</a></li>
+            <li><a href="{% url 'shop:add_product' request.user.id %}">Add Product</a></li>
+            <li><a href="{% url 'accounts:profile_update' request.user.id %}">Edit Profile</a></li>
+        </table>
     {% endif %}
 
-    <div class="card" style="width: 18rem; display:inline-block">
+    <div class="card text-center" style="width: 18rem; display:inline-block">
         {% thumbnail user.image "300x300" as img %}
             <a href="{% url 'accounts:show_photo' user.id %}">
                 <img  src="{{ img.url }}" class="card-img-top">
@@ -24,7 +26,7 @@
         {% endthumbnail %}        
     </div>
 
-    <h4 class="text-center">{{ user.username|capfirst }}</h4>
+    <h4 class="text-center">{{ user.email|capfirst }}</h4>
     <p class="text-center">{{ user.bio }}</p>
     {% if user.age %}
         <p class="text-center">{{ user.age }} years old</p>

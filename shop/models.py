@@ -1,3 +1,5 @@
+from email.mime import image
+from itertools import product
 from django.db import models
 from django.urls import reverse
 from accounts.models import User
@@ -24,8 +26,6 @@ class Category(models.Model): # categories
 
 
 class Product(models.Model):
-
-
 	user = models.ForeignKey(User, on_delete=models.CASCADE, default="")
 	category = models.ManyToManyField(Category, related_name='products')
 	name = models.CharField(max_length=200)
@@ -77,3 +77,9 @@ class ProdVote(models.Model):
 
     def __str__(self):
         return f'{self.user} liked {self.product}'
+
+
+class ProductPhoto(models.Model):
+	product=models.ForeignKey(Product,on_delete=models.CASCADE,related_name="p_photo")
+	image = models.ImageField(upload_to='products/%Y/%m/%d/')
+	created = models.DateTimeField(auto_now_add=True)

@@ -7,14 +7,19 @@ from django.contrib.auth.decorators import login_required
 # from django.contrib.auth.mixins import LoginRequiredMixin
 # import redis
 # from django.conf import settings
-
+from shop.models import Product, Category
 from .models import Post, Comment, Vote
 from .forms import AddPostForm, EditPostForm, AddCommentForm, AddReplyForm
 
 
-def all_posts(request):
+def all_posts(request, slug=None):
 	posts = Post.objects.all()
-	return render(request, 'posts/all_posts.html', {'posts': posts})
+	products = Product.objects.filter(available=True)
+	categories = Category.objects.filter(is_sub=False)
+	if slug:
+		category = get_object_or_404(Category, slug=slug)
+		products = products.filter(category=category)
+	return render(request, 'posts/all_posts.html', {'products': products, 'categories': categories,'posts': posts})
 
 # redis_con = redis.Redis(settings.REDIS_HOST, settings.REDIS_PORT, settings.REDIS_DB)
 

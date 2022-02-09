@@ -1,15 +1,22 @@
 from django import forms
-from .models import Product, Category, ProdComment
+from .models import Product, Category, ProdComment, ProductPhoto
 
 class AddProductForm(forms.ModelForm):
     category_choice= Category.objects.all()
     category = forms.ModelChoiceField(queryset=category_choice, widget=forms.Select(attrs={'class': 'form-control'}))
     name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'size':30}))
-    image = forms.ImageField()
 
     class Meta:
         model = Product
-        fields = (  'name' , 'category', 'description','image', 'price')
+        fields = (  'name' , 'category', 'description', 'price')
+
+
+class AddProductPhotoForm(forms.ModelForm):
+	image = forms.ImageField()
+	class Meta:
+		model = ProductPhoto
+		fields = ('image',)
+
 
 
 class AddProductCommentForm(forms.ModelForm):

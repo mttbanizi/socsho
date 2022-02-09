@@ -51,16 +51,16 @@
             <div  class="card-header"><a href="{% url 'accounts:dashboard' comment.user.id  %}"> {{comment.user }} </a><div  class="Reply_class btn btn-primary col-md-1">reply</div></div>
 
             <div class="card-body" style="display:none" id="reply_id">
-                <form action="{% url 'shop:add_reply' product.id comment.id %}" method="post">
+                <form action="{% url 'shop:product_reply' product.id comment.id %}" method="post">
                     {% csrf_token %}
                     {{ reply_form.as_p }}
-                    <input type="submit" value="Send">
+                    <input type="submit" value="Send reply">
                 </form>
             </div>
             {% else %}
                 <p>you have to login to send reply</p>
             {% endif %}
-            {% for reply in comment.rcomment.all %}
+            {% for reply in comment.rProdComment.all %}
                 <p class="bg-primary text-white p-3 m-5">{{ reply.user }} <br/> {{ reply.body }}</p>
             {% endfor %}
         </div><br/>

@@ -141,7 +141,9 @@
         {% for  profile_photo in profile_photos %}
             <div class="mySlides ">
                 <div class="numbertext">1 / {{profile_photos.count}} </div>
-                <a href="{% url 'accounts:update_photo' user.id  profile_photo.id %}"><img src=" {{profile_photo.image.url}} " style=" height:auto; width:100%;"></a>
+                {% if  self_dash %}<a href="{% url 'accounts:update_photo' user.id  profile_photo.id %}">{% endif %}
+                  <img src=" {{profile_photo.image.url}} " style=" height:auto; width:100%;">
+                {% if  self_dash %}</a>{% endif %}
                 <div class="text">Caption Text</div>
             </div>
         {% endfor %}
@@ -156,16 +158,18 @@
 
             <span class="dot" onclick="currentSlide('{{ forloop.counter }}' )"></span> 
         {% endfor %}
+        <br>
+        {% if  self_dash %}
+          <img src="{{ user.image.url }}" alt="" width="400px" height="400px">
+          <form action="" method="post" enctype="multipart/form-data" >
+              {% csrf_token %}
+              {{ form }}
+              <input type="submit" value="Update">          
+          </form>
+        {% endif %}
       
     </div>
     
     
-    <img src="{{ user.image.url }}" alt="" width="400px" height="400px">
-    <form action="" method="post" enctype="multipart/form-data" >
-
-        {% csrf_token %}
-        {{ form }}
-        <input type="submit" value="Update">
-        
-    </form>
+    
 {% endblock %}

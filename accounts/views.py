@@ -107,33 +107,38 @@ def unfollow(request):
 		else:
 			return JsonResponse({'status':'notexists'})
 
+@login_required
 def  show_photo(request, pk):
 	user = get_object_or_404(User, pk= pk)
 	profile_photos=ProfilePhoto.objects.filter(user=user)
-	print ('*'*50)
-	print (profile_photos)
-	if request.method == 'POST':
-		form = ProfileShowPhoto(request.POST,request.FILES)
-		if form.is_valid():
-			# image_path = user.image.path
-			# if os.path.exists(image_path):
-			# 	os.remove(image_path)
-			
-			pfm=form.save(commit=False)
-			pfm.user=user
-			pfm.save()
-			profile_photo=ProfilePhoto.objects.filter(user=user).last()
-			user.image=profile_photo.image
-			user.save()
-			messages.success(request, 'your image updated successfully', 'info')
+	self_dash= False
+	if user == request.user :
+		self_dash=True
+		if request.method == 'POST':
+			form = ProfileShowPhoto(request.POST,request.FILES)
+			if form.is_valid():
+				# image_path = user.image.path
+				# if os.path.exists(image_path):
+				# 	os.remove(image_path)
+				
+				pfm=form.save(commit=False)
+				pfm.user=user
+				pfm.save()
+				profile_photo=ProfilePhoto.objects.filter(user=user).last()
+				user.image=profile_photo.image
+				user.save()
+				messages.success(request, 'your image updated successfully', 'info')
 
-		return redirect('accounts:show_photo', user.id)
+			return redirect('accounts:show_photo', user.id)
+		
 	form = ProfileShowPhoto()
-	return render(request,'accounts/show_photo.html', {'user': user, 'form': form, 'profile_photos': profile_photos} )
+	return render(request,'accounts/show_photo.html', {'self_dash':self_dash, 'user': user, 'form': form, 'profile_photos': profile_photos} )
 
+@login_required
 def update_photo(request, user_id, image_id):
 	user = get_object_or_404(User, pk= user_id)
-	profile_photo=get_object_or_404(ProfilePhoto,pk=image_id)
-	user.image=profile_photo.image
-	user.save()
+	if user == request.user :
+		profile_photo=get_object_or_404(ProfilePhoto,pk=image_id)
+		user.image=profile_photo.image
+		user.save()
 	return redirect('accounts:dashboard', user.id)
