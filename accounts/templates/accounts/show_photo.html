@@ -141,7 +141,7 @@
         {% for  profile_photo in profile_photos %}
             <div class="mySlides ">
                 <div class="numbertext">1 / {{profile_photos.count}} </div>
-                <img src=" {{profile_photo.image.url}} " style=" height:auto; width:100%;">
+                <a href="{% url 'accounts:update_photo' user.id  profile_photo.id %}"><img src=" {{profile_photo.image.url}} " style=" height:auto; width:100%;"></a>
                 <div class="text">Caption Text</div>
             </div>
         {% endfor %}
@@ -153,7 +153,8 @@
     
     <div style="text-align:center">
         {% for  profile_photo in profile_photos %}
-            <span class="dot" onclick="currentSlide({{ forloop.counter}})"></span> 
+
+            <span class="dot" onclick="currentSlide('{{ forloop.counter }}' )"></span> 
         {% endfor %}
       
     </div>

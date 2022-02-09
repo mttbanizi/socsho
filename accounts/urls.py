@@ -14,5 +14,6 @@ urlpatterns = [
 	path('follow/', views.follow, name='follow'),
 	path('unfollow/', views.unfollow, name='unfollow'),
 	path('show_photo/<int:pk>/', views.show_photo, name='show_photo'),
+	path('update_photo/<int:user_id>/<int:image_id>', views.update_photo, name='update_photo'),
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
