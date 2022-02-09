@@ -8,7 +8,7 @@ from django.utils.text import slugify
 from cart.forms import CartAddForm
 from .forms import AddProductForm, AddProductCommentForm, AddReplyProductForm, AddProductPhotoForm
 from accounts.models import User
-from .models import  ProdComment, ProdVote, Category, Product
+from .models import  ProdComment, ProdVote, Category, Product, ProductPhoto
 
 
 
@@ -56,19 +56,21 @@ class AddProduct(LoginRequiredMixin, View):
 	def post(self, request, *args, **kwargs):
 		form = self.form_class(request.POST)
 		product_image_form = AddProductPhotoForm(request.POST, request.FILES)
+		images = request.FILES.getlist('images')
 		if form.is_valid():
 			new_product=form.save(commit=False)
 			new_product.user=request.user
 			new_product.slug = slugify(form.cleaned_data['description'][:30])
 			new_product.save()
-			if product_image_form.is_valid():
-				new_Photo= product_image_form.save(commit=False)
-				new_Photo.product= new_product
-				new_Photo.save()
-				new_product.image=new_Photo.image
+			if images:
+				for image in images:
+					photo = ProductPhoto.objects.create(image=image,product=new_product)
+					messages.success(request, 'your image updated successfully', 'info')
+					photo.save()
+				new_product.image=photo.image
 				new_product.save()
 			
-			messages.success(request, 'your image updated successfully', 'info')
+			
 			return redirect('shop:home')
 		
 		return  redirect('shop:home' )
