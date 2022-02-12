@@ -15,5 +15,9 @@ urlpatterns = [
 	path('unfollow/', views.unfollow, name='unfollow'),
 	path('show_photo/<int:pk>/', views.show_photo, name='show_photo'),
 	path('update_photo/<int:user_id>/<int:image_id>', views.update_photo, name='update_photo'),
+	path('reset/', views.UserPasswordResetView.as_view(), name='reset_password'),
+	path('reset/done/', views.UserPasswordResetDoneView.as_view(), name='password_reset_done'),
+	path('confirm/<uidb64>/<token>/', views.UserPasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+	path('confirm/complete', views.UserPasswordResetCompleteView.as_view(), name='password_reset_complete'),
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
