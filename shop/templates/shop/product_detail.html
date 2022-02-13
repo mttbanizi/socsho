@@ -1,4 +1,8 @@
 {% extends 'base.html' %}
+{% load static %}
+{% load thumbnail %}
+{% csrf_token %}
+
 {% block js_files %}
 <script>
     $(document).ready(function(){
@@ -7,13 +11,139 @@
        });
       
     });
+    
 </script>
+<script src="{% static 'accounts/js/slide_show.js' %}"></script>
+
+{% endblock %}
+{% block css_files %}
+<style >
+  * {box-sizing: border-box}
+    body {font-family: Verdana, sans-serif; margin:0}
+    .mySlides {display: none}
+    img {vertical-align: middle;}
+    
+    /* Slideshow container */
+    .slideshow-container {
+      max-width: 500px;
+      height: 500px;
+      position: relative;
+      margin: auto;
+      overflow: hidden;
+    }
+    
+    /* Next & previous buttons */
+    .prev, .next {
+      cursor: pointer;
+      position: absolute;
+      top: 50%;
+      width: auto;
+      padding: 16px;
+      margin-top: -22px;
+      color: white;
+      font-weight: bold;
+      font-size: 18px;
+      transition: 0.6s ease;
+      border-radius: 0 3px 3px 0;
+      user-select: none;
+    }
+    
+    /* Position the "next button" to the right */
+    .next {
+      right: 0;
+      border-radius: 3px 0 0 3px;
+    }
+    
+    /* On hover, add a black background color with a little bit see-through */
+    .prev:hover, .next:hover {
+      background-color: rgba(0,0,0,0.8);
+    }
+    
+    /* Caption text */
+    .text {
+      color: #f2f2f2;
+      font-size: 15px;
+      padding: 8px 12px;
+      position: absolute;
+      bottom: 8px;
+      width: 100%;
+      text-align: center;
+    }
+    
+    /* Number text (1/3 etc) */
+    .numbertext {
+      color: #f2f2f2;
+      font-size: 12px;
+      padding: 8px 12px;
+      position: absolute;
+      top: 0;
+    }
+    
+    /* The dots/bullets/indicators */
+    .dot {
+      cursor: pointer;
+      height: 15px;
+      width: 15px;
+      margin: 0 2px;
+      background-color: #bbb;
+      border-radius: 50%;
+      display: inline-block;
+      transition: background-color 0.6s ease;
+    }
+    
+    .active, .dot:hover {
+      background-color: #717171;
+    }
+    
+    /* Fading animation */
+    .fade {
+      -webkit-animation-name: fade;
+      -webkit-animation-duration: 5s;
+      animation-name: fade;
+      animation-duration: 5s;
+    }
+    
+    @-webkit-keyframes fade {
+      from {opacity: .4} 
+      to {opacity: 1}
+    }
+    
+    @keyframes fade {
+      from {opacity: .4} 
+      to {opacity: 1}
+    }
+    
+    /* On smaller screens, decrease text size */
+    @media only screen and (max-width: 300px) {
+      .prev, .next,.text {font-size: 11px}
+    }
+</style>
 {% endblock %}
 
 {% block content %}
     <h3>{{ product.name }}</h3>
     <small>{{ product.created }}</small><p>{{ product.price }} Toman</p><br/>
-    <img src="{{ product.image.url }}" alt="" width="400px" height="400px">
+    <div class="slideshow-container">
+        {% for  image in images %}
+            <div class="mySlides ">
+                <div class="numbertext">1 / {{image.count}} </div>
+                    <img src=" {{image.image.url}} " style=" height:auto; width:100%;">
+                
+                <div class="text">Caption Text</div>
+            </div>
+        {% endfor %}
+        <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+        <a class="next" onclick="plusSlides(1)">&#10095;</a>
+    
+    </div>
+    <br>
+    
+    <div style="text-align:center">
+        {% for  image in images %}
+            <span class="dot" onclick="currentSlide('{{ forloop.counter }}' )"></span>
+        {% endfor %}
+        <br>
+    </div>
     <p>{{ product.description }}</p><br/><br/>
     <form action="{% url 'cart:cart_add' product.id %}" method="post">
         {% csrf_token %}
@@ -21,10 +151,9 @@
         <input type="submit" value="Add to cart">
     </form>
 
-
     {% if request.user.is_authenticated %}
         {% if not can_like %}
-            <a href="{% url 'shop:product_like' product.id %}" class="btn btn-primary {% if can_like %}disabled {% endif %} col-md-2">Like {{ product.likes_count }}</a>
+            <a href="{% url 'shop:product_like' product.id %}" class="btn btn-primary {% if can_like %} disabled {% endif %} col-md-2">Like {{ product.likes_count }}</a>
         {% else %}
             <div class="btn btn-primary col-md-3">You Liked and {{ product.likes_count }} others</div>
             <div>
@@ -32,8 +161,15 @@
             </div>
         {% endif %}
     {% endif %}
-    <br/><br/><br/>
+    <br/>
+    {% if self_dash %}
+      <div>
+        <a href="{% url 'shop:product_update' product.id %}" class="btn btn-primary  col-md-1">Edit </a>
 
+        <a href="{% url 'shop:product_remove' product.id %}" class="btn btn-warning  col-md-1">Remove </a>
+
+      </div>
+    {% endif %}
     {% if request.user.is_authenticated %}
     <form action="" method="post" novalidate class="col-md-6">
         {% csrf_token %}
