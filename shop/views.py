@@ -1,9 +1,12 @@
+from django.urls import reverse_lazy
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
+from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.utils.text import slugify
+
 # project models and forms
 from cart.forms import CartAddForm
 from .forms import AddProductForm, AddProductCommentForm, AddReplyProductForm, AddProductPhotoForm
@@ -25,7 +28,11 @@ def product_detail(request, slug):
 	product = get_object_or_404(Product, slug=slug)
 	comments = ProdComment.objects.filter(product=product, is_reply=False)
 	form_cart = CartAddForm()
+	images=ProductPhoto.objects.filter(product=product)
 	can_like = False
+	self_dash = False
+	if request.user == product.user :
+		self_dash= True
 	if request.user.is_authenticated:
 		if product.user_can_like(request.user):
 			can_like = True
@@ -40,7 +47,7 @@ def product_detail(request, slug):
 	else:
 		form = AddProductCommentForm()
 	reply_form=AddReplyProductForm()
-	return render(request, 'shop/product_detail.html', {'product': product,'reply_form': reply_form, 'form_cart': form_cart, 'comments': comments, 'form': form, 'can_like': can_like})
+	return render(request, 'shop/product_detail.html', {'product': product,'reply_form': reply_form, 'form_cart': form_cart, 'comments': comments, 'form': form, 'can_like': can_like, 'images': images, 'self_dash': self_dash})
 
 
 class AddProduct(LoginRequiredMixin, View):
@@ -61,7 +68,9 @@ class AddProduct(LoginRequiredMixin, View):
 			new_product=form.save(commit=False)
 			new_product.user=request.user
 			new_product.slug = slugify(form.cleaned_data['description'][:30])
+			
 			new_product.save()
+			new_product.category.add(form.cleaned_data['category'])
 			if images:
 				for image in images:
 					photo = ProductPhoto.objects.create(image=image,product=new_product)
@@ -69,11 +78,8 @@ class AddProduct(LoginRequiredMixin, View):
 					photo.save()
 				new_product.image=photo.image
 				new_product.save()
-			
-			
-			return redirect('shop:home')
-		
-		return  redirect('shop:home' )
+			return redirect('home:all_home')
+		return  redirect('home:all_home' )
 
 def product_reply(request, product_id, comment_id):
 	product = get_object_or_404(Product, id=product_id)
@@ -104,3 +110,19 @@ def product_dislike(request, product_id):
 	dislike = ProdVote.objects.filter(product=product, user=request.user).last().delete()
 	messages.success(request, 'you disliked successfully', 'warning')
 	return redirect('shop:product_detail', product.slug)
+
+def manage_products(request, user_id):
+	user = get_object_or_404(User, pk=user_id)
+	products= Product.objects.filter(user=user)
+	if request.method== 'POST':
+		pass
+	return render(request, 'shop/manage_product.html',{'user': user,'products': products })
+
+class ProductDeleteView(DeleteView):
+	model = Product
+	success_url = reverse_lazy('home:all_home')
+
+
+class ProductUpdateView(UpdateView):
+	model= Product
+	fields = ['name', 'description', 'price', 'available']

@@ -7,10 +7,12 @@ class CategoryAdmin(admin.ModelAdmin):
 	list_display = ('name', 'slug')
 	prepopulated_fields = {'slug': ('name',)}
 
+@admin.register(ProductPhoto)
+class CategoryAdmin(admin.ModelAdmin):
+	list_display = ('image', 'product')
 
 admin.site.register(Product)
 admin.site.register(ProdComment)
-admin.site.register(ProductPhoto)
 
 # @admin.register(Product)
 # class ProductAdmin(admin.ModelAdmin):

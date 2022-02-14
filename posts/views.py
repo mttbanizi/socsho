@@ -18,7 +18,7 @@ def all_posts(request, slug=None):
 	categories = Category.objects.filter(is_sub=False)
 	if slug:
 		category = get_object_or_404(Category, slug=slug)
-		products = products.filter(category=category)
+		products = Product.objects.filter(category=category)
 	return render(request, 'posts/all_posts.html', {'products': products, 'categories': categories,'posts': posts})
 
 # redis_con = redis.Redis(settings.REDIS_HOST, settings.REDIS_PORT, settings.REDIS_DB)

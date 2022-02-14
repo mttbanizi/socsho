@@ -21,7 +21,7 @@ class Category(models.Model): # categories
 		return self.name
 
 	def get_absolute_url(self):
-		return reverse('shop:category_filter', args=[self.slug,])
+		return reverse('home:category_filter', args=[self.slug,])
 
 
 

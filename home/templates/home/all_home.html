@@ -2,37 +2,34 @@
 {% load thumbnail %}
 
 {% block title %} Home {% endblock %}
+{% block js_files %}
+<script>
+    $(document).ready(function(){
+      $(".Reply_class").click(function(){
+        $(this).parent().next().toggle();
+       });
+      
+    });
+    
+</script>
+
+{% endblock %}
+
 
 {% block content %}
     <ul class="nav nav-tabs" id="myTab" role="tablist">
         <li class="nav-item">
-        <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Posts</a>
+        <a class="nav-link " id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Posts</a>
         </li>
         <li class="nav-item">
-        <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Product</a>
+        <a class="nav-link active" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Product</a>
         </li>
        
         
     </ul>
     <div class="tab-content" id="myTabContent">
-        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-            {% for post in posts %}
-                <div class="card" style="width: 18rem; display:flex; flex_wrap:wrap; ">
-                    {% thumbnail post.image "300x300" as img %}
-                        <img src="{{ img.url }}" class="card-img-top">
-                    {% endthumbnail %}
-                    <p class="card-body">
-                        <a href="{% url 'accounts:dashboard' post.user.id %}">
-                            {{ post.user }}:
-                        </a>
-                        <a style="color:darkgrey" href="{{ post.get_absolute_url }}">
-                            {{ post.body }}
-                        </a>
-                    </p>
-                </div><br/>
-            {% endfor %}
-        </div>
-        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+        
+        <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
             {% for category in categories %}
 
                 <div class="btn-group">
@@ -59,7 +56,23 @@
                 </div>
             {% endfor %}    
         </div>
-        
+        <div class="tab-pane fade " id="home" role="tabpanel" aria-labelledby="home-tab">
+            {% for post in posts %}
+                <div class="card" style="width: 18rem; display:flex; flex_wrap:wrap; ">
+                    {% thumbnail post.image "300x300" as img %}
+                        <img src="{{ img.url }}" class="card-img-top">
+                    {% endthumbnail %}
+                    <p class="card-body">
+                        <a href="{% url 'accounts:dashboard' post.user.id %}">
+                            {{ post.user }}:
+                        </a>
+                        <a style="color:darkgrey" href="{{ post.get_absolute_url }}">
+                            {{ post.body }}
+                        </a>
+                    </p>
+                </div><br/>
+            {% endfor %}
+        </div>
     </div>
     
 {% endblock %}
