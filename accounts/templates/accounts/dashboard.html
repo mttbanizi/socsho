@@ -15,6 +15,7 @@
             <li><a href="{% url 'posts:add_post' request.user.id %}">Add post</a></li>
             <li><a href="{% url 'shop:add_product' request.user.id %}">Add Product</a></li>
             <li><a href="{% url 'shop:manage_products' request.user.id %}">Manage product </a></li>
+            <li><a href="{% url 'accounts:password_change'  %}">Change Password</a></li>
 
             <li><a href="{% url 'accounts:profile_update' request.user.id %}">Edit Profile</a></li>
         </table>
