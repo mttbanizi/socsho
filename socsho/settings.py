@@ -142,6 +142,6 @@ EMAIL_BACEND='django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'mttbanizi@gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_PASSWORD = 'mtuqsicdzrvusszp'
+EMAIL_HOST_PASSWORD = 'mtuqsicbzrvusszp'
 EMAIL_USE_TLS = True
 DEAFAULT_FROM_USER ='SOCSHO WEBSITE'
