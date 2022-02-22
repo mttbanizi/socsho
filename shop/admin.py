@@ -1,17 +1,47 @@
 from django.contrib import admin
-from .models import Category, Product, ProdComment, ProductPhoto
 
 
-@admin.register(Category)
-class CategoryAdmin(admin.ModelAdmin):
-	list_display = ('name', 'slug')
-	prepopulated_fields = {'slug': ('name',)}
+from django import forms
+from mptt.admin import MPTTModelAdmin
 
-@admin.register(ProductPhoto)
-class CategoryAdmin(admin.ModelAdmin):
-	list_display = ('image', 'product')
+from .models import (
+    Category,
+    Product,
+    ProductImage,
+    ProductSpecification,
+    ProductSpecificationValue,
+	ProdComment,
+    
+)
+admin.site.register(Category, MPTTModelAdmin)
 
-admin.site.register(Product)
+
+class ProductSpecificationInline(admin.TabularInline):
+    model = ProductSpecification
+
+
+
+class ProductImageInline(admin.TabularInline):
+    model = ProductImage
+
+
+class ProductSpecificationValueInline(admin.TabularInline):
+    model = ProductSpecificationValue
+
+
+@admin.register(Product)
+class ProductAdmin(admin.ModelAdmin):
+    inlines = [
+        ProductSpecificationValueInline,
+        ProductImageInline,
+    ]
+
+
+
+
+
+
+
 admin.site.register(ProdComment)
 
 # @admin.register(Product)
