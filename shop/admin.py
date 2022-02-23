@@ -1,4 +1,6 @@
+from unicodedata import category
 from django.contrib import admin
+from django.urls import resolve
 
 
 from django import forms
@@ -13,20 +15,40 @@ from .models import (
 	ProdComment,
     
 )
-admin.site.register(Category, MPTTModelAdmin)
+# admin.site.register(Category, MPTTModelAdmin)
 
 
 class ProductSpecificationInline(admin.TabularInline):
     model = ProductSpecification
+    
+    
 
+@admin.register(Category)
+class CategoryAdmin(MPTTModelAdmin):
+    
+    inlines = [
+        ProductSpecificationInline,
+    ]
 
 
 class ProductImageInline(admin.TabularInline):
     model = ProductImage
 
 
+class ProductSpecificationValueInlineForm(forms.ModelForm):
+    
+    def __init__(self, *args, **kwargs):
+        super(ProductSpecificationValueInlineForm, self).__init__(*args, **kwargs)
+        try:
+            self.fields['specification'].queryset = ProductSpecification.objects.filter(category=self.instance.category)
+        except:
+            self.fields['specification'].queryset = ProductSpecification.objects.none()
+
+
+
 class ProductSpecificationValueInline(admin.TabularInline):
     model = ProductSpecificationValue
+    form = ProductSpecificationValueInlineForm
 
 
 @admin.register(Product)
@@ -35,11 +57,6 @@ class ProductAdmin(admin.ModelAdmin):
         ProductSpecificationValueInline,
         ProductImageInline,
     ]
-
-
-
-
-
 
 
 admin.site.register(ProdComment)

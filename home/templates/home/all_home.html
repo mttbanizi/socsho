@@ -10,11 +10,29 @@
        });
       
     });
-    
+    $(document).ready(function(){
+        $('button.test').on("click", function(e){
+            $(this).next('ul').toggle();
+            e.stopPropagation();
+            e.preventDefault();
+        });
+    });   
 </script>
 
 {% endblock %}
+{% block css_files %}
+<style>
+ .dropdown-submenu {
+  position: relative;
+}
 
+.dropdown-submenu .dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -1px;
+}
+</style>
+{% endblock %}
 
 {% block content %}
     <ul class="nav nav-tabs" id="myTab" role="tablist">
@@ -30,19 +48,37 @@
     <div class="tab-content" id="myTabContent">
         
         <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-            {% for category in categories %}
-
-                <div class="btn-group">
-                    <a href="{{ category.get_absolute_url }}" class="btn btn-danger">{{ category.name }}</a>
-                    <button type="button" class="btn btn-danger dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
-                    <div class="dropdown-menu">
-                        {% for sub in category.scategory.all %}
-                            <a class="dropdown-item" href="{{ sub.get_absolute_url }}">{{ sub.name }}</a>
-                        {% endfor %}
-                    </div>
-                </div>
-            {% endfor %}
-
+            <div class="dropdown" >
+                
+                    {% for category in categories %}
+                        <a href="{{ category.get_absolute_url }}" class="">{{ category.name }}</a>                            
+                            
+                        <button class="test btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+                                
+                        <span class="caret"></span></button>
+                            <ul class="dropdown-menu" >
+                                {% for sub in category.get_children %}
+                                    <li class="dropdown-submenu">
+                                        <a class="" href="{{ sub.get_absolute_url }}">{{ sub.name }}</a>
+                                        <button class="test btn btn-default dropdown-toggle"  type="button" data-toggle="dropdown">
+                                            <span class="caret"></span>
+                                        </button>
+                                        
+                                        <ul class="dropdown-menu">
+                                            {% for s in sub.get_children %}
+                                                <li class="dropdown-submenu">
+                                                    <a class="test" href="{{ s.get_absolute_url }}">{{ s.name }}</a>
+                                                </li>
+                                            {% endfor %}
+                                        </ul>     
+                                    </li>    
+                                {% endfor %}
+                            </ul>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        
             <br/><br/><br/>
 
             {% for product in products %}

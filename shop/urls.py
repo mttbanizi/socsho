@@ -19,4 +19,7 @@ urlpatterns = [
 	path('product_dislike/<int:product_id>/', views.product_dislike, name='product_dislike'),
 	path('<slug:slug>/', views.product_detail, name='product_detail'),
 
+	path('shop/<slug:category_slug>/', views.category_list, name='category_list'),
+
+
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
