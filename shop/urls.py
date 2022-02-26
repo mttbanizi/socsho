@@ -8,7 +8,7 @@ from django.conf.urls.static import static
 app_name = 'shop'
 urlpatterns = [
 	path('shop/', views.shop_home, name='home'),
-	path('category/<slug:slug>/', views.shop_home, name='category_filter'),
+	path('shop/<slug:category_slug>/', views.shop_home, name='category_filter'),
 	path('add_product/<int:user_id>/', views.AddProduct.as_view(), name='add_product'),
 	path('manage_products/<int:user_id>/', views.manage_products, name='manage_products'),
 	path('product_reply/<int:product_id>/<int:comment_id>/', views.product_reply, name='product_reply'),
@@ -19,7 +19,6 @@ urlpatterns = [
 	path('product_dislike/<int:product_id>/', views.product_dislike, name='product_dislike'),
 	path('<slug:slug>/', views.product_detail, name='product_detail'),
 
-	path('shop/<slug:category_slug>/', views.category_list, name='category_list'),
 
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

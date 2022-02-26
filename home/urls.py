@@ -1,11 +1,13 @@
 from django.urls import path
 from . import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 
 app_name = 'home'
 urlpatterns = [
 	path('', views.all_home, name='all_home'),
-	path('category_filter/<slug:slug>/', views.all_home, name='category_filter'),
+	path('/<slug:category_slug>/', views.all_home, name='category_filter'),
 
 	
-]
+]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

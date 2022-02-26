@@ -36,13 +36,14 @@ class ProductImageInline(admin.TabularInline):
 
 
 class ProductSpecificationValueInlineForm(forms.ModelForm):
+    model=ProductSpecificationValue
     
-    def __init__(self, *args, **kwargs):
-        super(ProductSpecificationValueInlineForm, self).__init__(*args, **kwargs)
-        try:
-            self.fields['specification'].queryset = ProductSpecification.objects.filter(category=self.instance.category)
-        except:
-            self.fields['specification'].queryset = ProductSpecification.objects.none()
+    # def __init__(self, *args, **kwargs):
+    #     super(ProductSpecificationValueInlineForm, self).__init__(*args, **kwargs)
+    #     try:
+    #         self.fields['specification'].queryset = ProductSpecification.objects.filter(category=self.instance.category)
+    #     except:
+    #         self.fields['specification'].queryset = ProductSpecification.objects.none()
 
 
 

@@ -11,7 +11,7 @@ from django.utils.text import slugify
 from cart.forms import CartAddForm
 from .forms import AddProductForm, AddProductCommentForm, AddReplyProductForm, AddProductPhotoForm
 from accounts.models import User
-from .models import  ProdComment, ProdVote, Category, Product, ProductPhoto
+from .models import  ProdComment, ProdVote, Category, Product, ProductImage, ProductSpecificationValue
 
 
 
@@ -36,7 +36,8 @@ def product_detail(request, slug):
 	product = get_object_or_404(Product, slug=slug)
 	comments = ProdComment.objects.filter(product=product, is_reply=False)
 	form_cart = CartAddForm()
-	images=ProductPhoto.objects.filter(product=product)
+	images=ProductImage.objects.filter(product=product)
+	psv=ProductSpecificationValue.objects.filter(product=product)
 	can_like = False
 	self_dash = False
 	if request.user == product.user :
@@ -55,7 +56,10 @@ def product_detail(request, slug):
 	else:
 		form = AddProductCommentForm()
 	reply_form=AddReplyProductForm()
-	return render(request, 'shop/product_detail.html', {'product': product,'reply_form': reply_form, 'form_cart': form_cart, 'comments': comments, 'form': form, 'can_like': can_like, 'images': images, 'self_dash': self_dash})
+	return render(request, 'shop/product_detail.html',
+				 {'product': product,'reply_form': reply_form, 'form_cart': form_cart, 
+				 'comments': comments, 'form': form, 'can_like': can_like, 'images': images,
+				  'self_dash': self_dash, 'productspecificationvalue': psv})
 
 
 class AddProduct(LoginRequiredMixin, View):
@@ -81,7 +85,7 @@ class AddProduct(LoginRequiredMixin, View):
 			new_product.category.add(form.cleaned_data['category'])
 			if images:
 				for image in images:
-					photo = ProductPhoto.objects.create(image=image,product=new_product)
+					photo = ProductImage.objects.create(image=image,product=new_product)
 					messages.success(request, 'your image updated successfully', 'info')
 					photo.save()
 				new_product.image=photo.image
@@ -133,4 +137,4 @@ class ProductDeleteView(DeleteView):
 
 class ProductUpdateView(UpdateView):
 	model= Product
-	fields = ['name', 'description', 'price', 'available']
+	fields = ['title', 'description', 'price', 'is_active','discount_price']

@@ -122,7 +122,12 @@
 
 {% block content %}
     <h3>{{ product.name }}</h3>
-    <small>{{ product.created }}</small><p>{{ product.price }} Toman</p><br/>
+    <small>{{ product.created }}</small>
+    <p>{{ product.price }} Toman</p><br/>
+    {% for  psv in productspecificationvalue %}
+      <p>{{psv.specification}} : {{psv.value}} </p>
+    {% endfor %}
+    
     <div class="slideshow-container">
         {% for  image in images %}
             <div class="mySlides ">
