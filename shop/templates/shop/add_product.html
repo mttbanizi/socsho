@@ -1,11 +1,26 @@
 {% extends 'base.html' %}
-
+{% load mptt_tags %}
+{% script block%}
+{% endblock %}
 {% block content %}
+<ul class="root">
+    {% recursetree categories %}
+    <li>
+        {{ node.name }}
+        {% if not node.is_leaf_node %}
+            <ul class="children">
+                {{ children }}
+            </ul>
+        {% endif %}
+    </li>
+    {% endrecursetree %}
+</ul>
 
 
 
 
     <form action="" method="post" enctype="multipart/form-data">
+        
         {% csrf_token %}
         {{ form.as_p }}
         <input type="file" name="images" class="form-control-file" id="note-image" multiple>
