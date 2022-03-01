@@ -1,3 +1,4 @@
+from unicodedata import category
 from django.urls import reverse_lazy
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
@@ -6,12 +7,15 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.utils.text import slugify
+from django.http import JsonResponse, HttpResponse
+from django.forms.models import model_to_dict
+
 
 # project models and forms
 from cart.forms import CartAddForm
 from .forms import AddProductForm, AddProductCommentForm, AddReplyProductForm, AddProductPhotoForm
 from accounts.models import User
-from .models import  ProdComment, ProdVote, Category, Product, ProductImage, ProductSpecificationValue
+from .models import  ProdComment, ProdVote, Category, Product, ProductImage, ProductSpecificationValue, ProductSpecification
 
 
 
@@ -68,21 +72,26 @@ class AddProduct(LoginRequiredMixin, View):
 
 	def get(self, request, user_id):
 		user = get_object_or_404(User, pk=user_id)
-		product_image_form = AddProductPhotoForm()
 		messages.success(request, user_id)
-		return render(request, self.template_name, {'user': user, 'form': self.form_class, 'product_image_form':product_image_form})
+		return render(request, self.template_name, {'user': user, 'form': self.form_class})
 
 	def post(self, request, *args, **kwargs):
 		form = self.form_class(request.POST)
-		product_image_form = AddProductPhotoForm(request.POST, request.FILES)
 		images = request.FILES.getlist('images')
+		print (50*'*')
+		print (form)
 		if form.is_valid():
+			print (50*'#')
 			new_product=form.save(commit=False)
 			new_product.user=request.user
 			new_product.slug = slugify(form.cleaned_data['description'][:30])
 			
 			new_product.save()
-			new_product.category.add(form.cleaned_data['category'])
+			category = form.cleaned_data['category']
+			print (50*'$')
+			print (category)
+			new_product.category.add(category)
+
 			if images:
 				for image in images:
 					photo = ProductImage.objects.create(image=image,product=new_product)
@@ -90,7 +99,12 @@ class AddProduct(LoginRequiredMixin, View):
 					photo.save()
 				new_product.image=photo.image
 				new_product.save()
+			  
 			return redirect('home:all_home')
+		else:
+			for field in form:
+				print ("field error:", field.name, field.errors)
+			messages.error(request, 'your form is not valid', 'error')
 		return  redirect('home:all_home' )
 
 def product_reply(request, product_id, comment_id):
@@ -138,3 +152,15 @@ class ProductDeleteView(DeleteView):
 class ProductUpdateView(UpdateView):
 	model= Product
 	fields = ['title', 'description', 'price', 'is_active','discount_price']
+
+def select_category(request ):
+	if request.method == 'POST':
+		category = Category.objects.get(id=request.POST['category_slug'])
+		product_specification=list(ProductSpecification.objects.filter(category=category).values())
+		
+		
+		if category :
+			return JsonResponse( product_specification, safe=False )
+		else :
+			return JsonResponse({'status':'not ok'})
+

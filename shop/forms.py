@@ -1,10 +1,11 @@
+
 from django import forms
 from .models import Product, Category, ProdComment, ProductPhoto
 from mptt.forms import TreeNodeMultipleChoiceField
 
 class AddProductForm(forms.ModelForm):
     category_choice= Category.objects.all()
-    category = TreeNodeMultipleChoiceField(queryset=category_choice, widget=forms.Select(attrs={'class': 'form-control'}))
+    category = TreeNodeMultipleChoiceField(queryset=category_choice,  widget=forms.Select(attrs={'class': 'form-control'}))
     name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'size':30}))
 
     class Meta:

@@ -1,30 +1,70 @@
 {% extends 'base.html' %}
 {% load mptt_tags %}
-{% script block%}
+{% block js_files %}
+<script>
+ $(document).on("change","#id_category",function(){
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    
+    var csrftoken = getCookie('csrftoken');
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+ 
+    category_slug = $(this).val();
+    
+    $.ajax({
+        url: '/shop/select_category/',
+        method: 'POST',
+        headers: {'X-CSRFToken': csrftoken},
+        data: {
+            'category_slug': category_slug ,
+        },
+        success: function(data){
+            $( ".ajax_input" ).empty();
+            $.each(data, function(key, val) {
+                var BR = document.createElement('Br');
+                document.getElementsByClassName('ajax_input')[0].appendChild(BR);   
+                var elem2 = document.createElement('label');
+                elem2.innerHTML =val.name; 
+                document.getElementsByClassName('ajax_input')[0].appendChild(elem2);                                
+                $('<input>').attr({
+                   type: 'text',                   
+                   id: val.name ,
+                   name: val.name
+               }).appendTo('#ajax_input');
+               
+            });            
+        }
+    });
+});
+</script>
 {% endblock %}
 {% block content %}
-<ul class="root">
-    {% recursetree categories %}
-    <li>
-        {{ node.name }}
-        {% if not node.is_leaf_node %}
-            <ul class="children">
-                {{ children }}
-            </ul>
-        {% endif %}
-    </li>
-    {% endrecursetree %}
-</ul>
-
-
-
 
     <form action="" method="post" enctype="multipart/form-data">
         
         {% csrf_token %}
         {{ form.as_p }}
+        
         <input type="file" name="images" class="form-control-file" id="note-image" multiple>
         <input type="submit" value="Add Product">
     </form>
+    <div class="ajax_input" id="ajax_input" >
 
+    </div>
 {% endblock %}
