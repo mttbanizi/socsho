@@ -90,7 +90,7 @@ class AddProduct(LoginRequiredMixin, View):
 			category = form.cleaned_data['category']
 			print (50*'$')
 			print (category)
-			new_product.category.add(category)
+			#new_product.category.add(category)
 
 			if images:
 				for image in images:
@@ -103,7 +103,7 @@ class AddProduct(LoginRequiredMixin, View):
 			return redirect('home:all_home')
 		else:
 			for field in form:
-				print ("field error:", field.name, field.errors)
+				print ("field error:", field.name, field.value, field.errors)
 			messages.error(request, 'your form is not valid', 'error')
 		return  redirect('home:all_home' )
 
