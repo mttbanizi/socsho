@@ -99,9 +99,11 @@
                             <img src="{{ img.url }}" class="card-img-top">
                             {% endthumbnail %}
                         {% endif %}
-                    {% endfor %}  
+                    {% endfor %} 
+                    
                     <div class="card-body">
                         <a href="{{ product.get_absolute_url }}" class="card-title">{{ product.title }}</a>
+                        <p>product.description</p>
                     </div>
                 </div>
             {% endfor %}    

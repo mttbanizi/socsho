@@ -131,9 +131,19 @@
     <div class="slideshow-container">
         {% for  image in images %}
             <div class="mySlides ">
-                <div class="numbertext">1 / {{image.count}} </div>
+                <div class="numbertext">1 / {{images.count}} </div>
                     <img src=" {{image.image.url}} " style=" height:auto; width:100%;">
                 
+                <div class="text">Caption Text</div>
+            </div>
+        {% endfor %}
+        {% for  video in product.product_video.all %}
+            <div class="mySlides ">
+                <div class="numbertext">1 / {{videos.count}} </div>
+                    <video width='400' controls>
+                        <source src=' {{video.video.url}}' type='video/mp4'>
+                        Your browser does not support the video tag.
+                    </video>
                 <div class="text">Caption Text</div>
             </div>
         {% endfor %}
@@ -147,8 +157,12 @@
         {% for  image in images %}
             <span class="dot" onclick="currentSlide('{{ forloop.counter }}' )"></span>
         {% endfor %}
+        {% for  video in product.product_video.all %}
+            <span class="dot" onclick="currentSlide('{{ forloop.counter }}' )"></span>
+        {% endfor %}
         <br>
     </div>
+    
     <p>{{ product.description }}</p><br/><br/>
     <form action="{% url 'cart:cart_add' product.id %}" method="post">
         {% csrf_token %}

@@ -13,6 +13,7 @@ from .models import (
     ProductSpecification,
     ProductSpecificationValue,
 	ProdComment,
+    ProducVideo,
     
 )
 # admin.site.register(Category, MPTTModelAdmin)
@@ -61,6 +62,9 @@ class ProductAdmin(admin.ModelAdmin):
 
 
 admin.site.register(ProdComment)
+admin.site.register(ProducVideo)
+
+admin.site.register(ProductImage)
 
 # @admin.register(Product)
 # class ProductAdmin(admin.ModelAdmin):

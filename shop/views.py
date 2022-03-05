@@ -15,7 +15,7 @@ from django.forms.models import model_to_dict
 from cart.forms import CartAddForm
 from .forms import AddProductForm, AddProductCommentForm, AddReplyProductForm, AddProductPhotoForm
 from accounts.models import User
-from .models import  ProdComment, ProdVote, Category, Product, ProductImage, ProductSpecificationValue, ProductSpecification
+from .models import  ProdComment, ProdVote, Category, Product, ProductImage, ProductSpecificationValue, ProductSpecification, ProducVideo
 
 
 
@@ -78,34 +78,34 @@ class AddProduct(LoginRequiredMixin, View):
 	def post(self, request, *args, **kwargs):
 		form = self.form_class(request.POST)
 		images = request.FILES.getlist('images')
-		print (50*'*')
-		print (form)
+		videos=request.FILES.getlist('videos')
 		if form.is_valid():
-			print (50*'#')
 			new_product=form.save(commit=False)
 			new_product.user=request.user
 			new_product.slug = slugify(form.cleaned_data['description'][:30])
-			
 			new_product.save()
-			category = form.cleaned_data['category']
-			print (50*'$')
-			print (category)
-			#new_product.category.add(category)
-
+			category = get_object_or_404(Category, name=form.cleaned_data['category'])
 			if images:
 				for image in images:
 					photo = ProductImage.objects.create(image=image,product=new_product)
-					messages.success(request, 'your image updated successfully', 'info')
 					photo.save()
-				new_product.image=photo.image
-				new_product.save()
-			  
+				photo.is_feature=True
+				photo.save()
+				messages.success(request, 'your image updated successfully', 'info')
+			if videos:
+				for video in videos:
+					ProducVideo.objects.create(Video=video,product=new_product).save()
+					
+			for sp in category.C_product_secification.all() :
+				ProductSpecificationValue.objects.create(product=new_product,
+									specification=sp, value=request.POST.get(sp.name))
 			return redirect('home:all_home')
 		else:
-			for field in form:
-				print ("field error:", field.name, field.value, field.errors)
+			# for field in form:
+			# 	print ("field error:", field.name,  field.errors)
 			messages.error(request, 'your form is not valid', 'error')
 		return  redirect('home:all_home' )
+
 
 def product_reply(request, product_id, comment_id):
 	product = get_object_or_404(Product, id=product_id)

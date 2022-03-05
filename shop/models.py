@@ -58,7 +58,7 @@ class ProductSpecification(models.Model):
     specifiction or features for the product types.
     """
 
-    category = models.ForeignKey(Category, on_delete=models.RESTRICT)
+    category = models.ForeignKey(Category, on_delete=models.RESTRICT, related_name='C_product_secification')
     name = models.CharField(verbose_name=_("Name"), help_text=_("Required"), max_length=255)
 
     class Meta:
@@ -139,7 +139,7 @@ class ProductSpecificationValue(models.Model):
     products individual specification or bespoke features.
     """
 
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='P_product_specificatiob_value')
     specification = models.ForeignKey(ProductSpecification, on_delete=models.RESTRICT)
     value = models.CharField(
         verbose_name=_("value"),
@@ -210,3 +210,30 @@ class ProductPhoto(models.Model):
 	product=models.ForeignKey(Product,on_delete=models.CASCADE,related_name="p_photo")
 	image = models.ImageField(upload_to='products/%Y/%m/%d/')
 	created = models.DateTimeField(auto_now_add=True)
+
+
+class ProducVideo(models.Model):
+    """
+    The Product Image table.
+    """
+
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="product_video")
+    Video = models.FileField(
+        verbose_name=_("Video"),
+        help_text=_("Upload a product video"),
+        upload_to="video/",
+        default="video/default.mp4",
+    )
+    alt_text = models.CharField(
+        verbose_name=_("Alturnative text"),
+        help_text=_("Please add alturnative text"),
+        max_length=255,
+        null=True,
+        blank=True,
+    )
+    created_at = models.DateTimeField(auto_now_add=True, editable=False)
+
+    class Meta:
+        verbose_name = _("Product video")
+        verbose_name_plural = _("Product video")
+

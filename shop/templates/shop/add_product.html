@@ -3,6 +3,7 @@
 {% block js_files %}
 <script>
  $(document).on("change","#id_category",function(){
+     
     function getCookie(name) {
         var cookieValue = null;
         if (document.cookie && document.cookie !== '') {
@@ -60,11 +61,12 @@
         
         {% csrf_token %}
         {{ form.as_p }}
-        
+        <div class="ajax_input" id="ajax_input" >
+
+        </div>
         <input type="file" name="images" class="form-control-file" id="note-image" multiple>
+        <input type="file" name="videos" class="form-control-file" id="note-video" multiple>
         <input type="submit" value="Add Product">
     </form>
-    <div class="ajax_input" id="ajax_input" >
-
-    </div>
+    
 {% endblock %}
