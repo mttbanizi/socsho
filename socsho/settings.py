@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'channels',
     'mptt',
     'sorl.thumbnail',
+    'rest_framework',
 
     # apps
     'accounts.apps.AccountsConfig',
