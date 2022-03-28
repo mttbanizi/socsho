@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'orders.apps.OrdersConfig',
     'home.apps.HomeConfig',
     'chat',
+    'single_message',
 
 ]
 

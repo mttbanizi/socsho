@@ -1,3 +1,4 @@
+
 {% load static %}
 <!-- chat/templates/chat/room.html -->
 <!DOCTYPE html>
@@ -108,49 +109,37 @@
 
       chatSocket2.onmessage = function(e) {
         var data = JSON.parse(e.data)
-
-
-
-
         for( let i=data['members_list'].length-1; i>=0 ; i--){
 
           if(data['members_list'][i] == username){
             if(data['__str__'] != username ){
               if(data['roomname'] != roomName){
 
-               
-                if (!("Notification" in window)) {
-              alert("This browser does not support desktop notification");
-            }
-          
-            // Let's check whether notification permissions have already been granted
-            else if (Notification.permission === "granted") {
-              // If it's okay let's create a notification
-              var notification = new Notification(data['__str__']+" : "+data['content']);
-            }
-          
-            // Otherwise, we need to ask the user for permission
-            else if (Notification.permission !== "denied") {
-              Notification.requestPermission().then(function (permission) {
-                // If the user accepts, let's create a notification
-                if (permission === "granted") {
-                  var notification = new Notification("Hi there!");
-                }
-              });
-
-
+                
+                  if (!("Notification" in window)) {
+                    alert("This browser does not support desktop notification");
+                  }
+            
+                  // Let's check whether notification permissions have already been granted
+                  else if (Notification.permission === "granted") {
+                    // If it's okay let's create a notification
+                    var notification = new Notification(data['__str__']+" : "+data['content']);
+                  }
+              
+                  // Otherwise, we need to ask the user for permission
+                  else if (Notification.permission !== "denied") {
+                    Notification.requestPermission().then(function (permission) {
+                      // If the user accepts, let's create a notification
+                      if (permission === "granted") {
+                        var notification = new Notification("Hi there!");
+                      }
+                    });
+                  }
               }
-
             }
-
-
           }
-
-
         }
-
       }
-    }
 
 
 
@@ -158,15 +147,16 @@
 
 
       chatSocket.onopen = function(e) {
-          chatSocket.send(JSON.stringify({'command': 'fetch_message', 'roomname': roomName}));
+          chatSocket.send(JSON.stringify({'command': 'fetch_message', 'roomname': roomName, 'username':username}));
       }
 
 
 
       chatSocket.onmessage = function(e) {
 
-
+          console.log('on_messgae')
           var data = JSON.parse(e.data);
+          console.log(data['command'])
           if (data['command'] === 'fetch_message') {
               for (let i=data['message'].length-1; i>=0 ; i--) {
               createMessage(data['message'][i]);
@@ -224,7 +214,8 @@
         }
 
         else{
-  
+          console.log('content')
+          console.log(data.content)
           var msgListTag = document.createElement('li');
           var pTag = document.createElement('p');
           pTag.textContent = data.content;
