@@ -1,18 +1,22 @@
-<!-- chat/templates/chat/room.html -->
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8"/>
-    <title>Chat Room</title>
-</head>
-<body>
-    <textarea id="chat-log" cols="100" rows="20"></textarea><br>
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css_files %}
+<link rel="stylesheet" href="{% static 'single_message/css/style.css' %}" />
+{% endblock %}
+
+{% block content %}
+    <div class="messages">
+      <ul id="chat-log">
+      </ul>
+    </div>
     <input id="chat-message-input" type="text" size="100"><br>
     <input id="chat-message-submit" type="button" value="Send">
     {{ room_name|json_script:"room-name" }}
     {{request.user.email|json_script:"username" }}
-
-    <script>
+{% endblock %}
+{% block js_files %}
+<script>
         const roomName = JSON.parse(document.getElementById('room-name').textContent);
         var username = JSON.parse(document.getElementById('username').textContent);
 
@@ -39,7 +43,20 @@
           if(data['members_list'][i] == username){
             if(data['__str__'] != username ){
               if(data['roomname'] == roomName){
-                
+                  let divchat = document.getElementById('dropdown_chat_list');
+                  let message_item = document.createElement("button");
+                  let message_deail = document.createElement("div");
+                  message_item.innerHTML=data['__str__'];
+                  message_item.className="message_item_class";
+                  message_deail.className="message_detail_class";
+                  message_deail.style.display='none';
+                  message_deail.innerHTML=data['message'];
+                  divchat.appendChild(message_item);
+                  divchat.appendChild(message_deail);
+                  $(".message_item_class").hover(function(){
+                    $(this).next().toggle();
+                  });
+
                   if (!("Notification" in window)) {
                     alert("This browser does not support desktop notification");
                   }
@@ -66,13 +83,63 @@
         }
       }
 
+      
 
-        chatSocket.onmessage = function(e) {
+      chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
-            document.querySelector('#chat-log').value += (data.message + '\n');
+         //   document.querySelector('#chat-log').value += (data.message + '\n');
+            console.log('on_messgae');
+          
+          console.log(data)
+          if (data['command'] === 'fetch_message') {
+              for (let i=data['message'].length-1; i>=0 ; i--) {
+              createMessage(data['message'][i]);
+            }
+          }
+
+          else if (data['command'] === "new_message" ){
+            createMessage(data);
+            }
+
+          else if(data['command'] === 'img'){
+
+            createMessage(data);
+
+
+          }
         };
 
-        chatSocket.onclose = function(e) {
+      function createMessage(data) {
+        var author = data["__str__"];
+        var command = data['command'];
+
+        if(command == "img"){
+
+          var msgListTag = document.createElement('li');
+          var imgTag = document.createElement('img');
+          imgTag.src = data['content'];
+          msgListTag.appendChild(imgTag);
+        }
+
+        else{
+          console.log('content')
+          console.log(data.message)
+          var msgListTag = document.createElement('li');
+          var pTag = document.createElement('p');
+          pTag.textContent = data.message;
+          msgListTag.appendChild(pTag);
+
+        }
+        if (author === username) {
+          msgListTag.className = 'sent';
+        } else {
+          msgListTag.className = 'replies';
+        }
+        
+        document.querySelector('#chat-log').appendChild(msgListTag);
+      }
+
+      chatSocket.onclose = function(e) {
             console.error('Chat socket closed unexpectedly');
         };
 
@@ -96,5 +163,5 @@
             messageInputDom.value = '';
         };
     </script>
-</body>
+{% endblock %}
 </html>

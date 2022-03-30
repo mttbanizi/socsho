@@ -22,9 +22,9 @@ class Payam(models.Model):
 
 
     def last_message(self, roomname):
-        return Message.objects.filter(related_chat__roomname=roomname)
+        return Payam.objects.filter(related_chat__roomname=roomname)
 
     def __str__(self):
-        return self.author.email
+        return self.user.email
 
 # Create your models here.
