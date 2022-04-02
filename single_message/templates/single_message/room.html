@@ -6,12 +6,40 @@
 {% endblock %}
 
 {% block content %}
+<div id="frame">
+  <div class="content">
+    <div class="contact-profile">
+      <img src="" alt="" />
+      <p>{{ username }}</p>
+      <div class="social-media">
+        <i class="fa fa-facebook" aria-hidden="true"></i>
+        <i class="fa fa-twitter" aria-hidden="true"></i>
+        <i class="fa fa-instagram" aria-hidden="true"></i>
+      </div>
+    </div>
     <div class="messages">
       <ul id="chat-log">
       </ul>
     </div>
-    <input id="chat-message-input" type="text" size="100"><br>
-    <input id="chat-message-submit" type="button" value="Send">
+    <div class="message-input">
+      <div class="wrap">
+        <input
+          id="chat-message-input"
+          type="text"
+          placeholder="Write your message..."
+        />
+        <i class="fa fa-paperclip attachment" aria-hidden="true" onclick="document.getElementById('inp').click();"></i>
+        
+
+        <button id="chat-message-submit" class="submit">
+          <i class="fa fa-paper-plane" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<input id="inp" type='file' style="display:none" >
+    <p id="b64"></p>
     {{ room_name|json_script:"room-name" }}
     {{request.user.email|json_script:"username" }}
 {% endblock %}
@@ -50,7 +78,7 @@
                   message_item.className="message_item_class";
                   message_deail.className="message_detail_class";
                   message_deail.style.display='none';
-                  message_deail.innerHTML=data['message'];
+                  message_deail.innerHTML=data['content'];
                   divchat.appendChild(message_item);
                   divchat.appendChild(message_deail);
                   $(".message_item_class").hover(function(){
@@ -64,7 +92,7 @@
                   // Let's check whether notification permissions have already been granted
                   else if (Notification.permission === "granted") {
                     // If it's okay let's create a notification
-                    var notification = new Notification(data['__str__']+" : "+data['message']);
+                    var notification = new Notification(data['__str__']+" : "+data['content']);
                   }
               
                   // Otherwise, we need to ask the user for permission
@@ -84,6 +112,10 @@
       }
 
       
+      chatSocket.onopen = function(e) {
+          chatSocket.send(JSON.stringify({'command': 'fetch_message', 'roomname': roomName, 'username':username}));
+      }
+
 
       chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
@@ -92,8 +124,8 @@
           
           console.log(data)
           if (data['command'] === 'fetch_message') {
-              for (let i=data['message'].length-1; i>=0 ; i--) {
-              createMessage(data['message'][i]);
+              for (let i=data['content'].length-1; i>=0 ; i--) {
+              createMessage(data['content'][i]);
             }
           }
 
@@ -123,10 +155,10 @@
 
         else{
           console.log('content')
-          console.log(data.message)
+          console.log(data.content)
           var msgListTag = document.createElement('li');
           var pTag = document.createElement('p');
-          pTag.textContent = data.message;
+          pTag.textContent = data.content;
           msgListTag.appendChild(pTag);
 
         }

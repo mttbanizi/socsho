@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css_files %}
+<link rel="stylesheet" href="{% static 'single_message/css/style.css' %}" />
+{% endblock %}
+
+{% block content %}
+<div id="frame">
+  <div class="content">
+    <div class="contact-profile">
+      <img src="" alt="" />
+      
+      <div class="social-media">
+        <i class="fa fa-facebook" aria-hidden="true"></i>
+        <i class="fa fa-twitter" aria-hidden="true"></i>
+        <i class="fa fa-instagram" aria-hidden="true"></i>
+      </div>
+    </div>
+    <div class="messages">
+      <ul id="chat-log">
+      </ul>
+    </div>
+    <div class="message-input">
+      <div class="wrap">
+        <input
+          id="chat-message-input"
+          type="text"
+          placeholder="Write your message..."
+        />
+        <i class="fa fa-paperclip attachment" aria-hidden="true" onclick="document.getElementById('inp').click();"></i>
+        
+
+        <button id="chat-message-submit" class="submit">
+          <i class="fa fa-paper-plane" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<input id="inp" type='file' style="display:none" >
+    <p id="b64"></p>
+    
+    {{request.user.email|json_script:"sender" }}
+    {{ reciever|json_script:"reciever" }}
+    {{ roomname|json_script:"roomname" }}
+{% endblock %}
+{% block js_files %}
+<script>
+        const reciever = JSON.parse(document.getElementById('reciever').textContent);
+        const sender = JSON.parse(document.getElementById('sender').textContent);
+        const roomName = JSON.parse(document.getElementById('roomname').textContent);
+        
+
+        const chatSocket_dual = new WebSocket(
+            'ws://'
+            + window.location.host
+            + '/ws/dual_message/'
+            + roomName
+            + '/'
+        );
+
+        chatSocket_dual.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+         //   document.querySelector('#chat-log').value += (data.message + '\n');
+            console.log('on_messgae');
+          
+          console.log(data);
+          if (data['command'] === 'fetch_message') {
+              for (let i=data['content'].length-1; i>=0 ; i--) {
+              createMessage(data['content'][i]);
+            }
+          }
+
+          else if (data['command'] === "new_message" ){
+            createMessage(data);
+            }
+
+          else if(data['command'] === 'img'){
+
+            createMessage(data);
+
+
+          }
+        }; 
+
+        function createMessage(data) {
+        var author = data["__str__"];
+        var command = data['command'];
+
+        if(command == "img"){
+
+          var msgListTag = document.createElement('li');
+          var imgTag = document.createElement('img');
+          imgTag.src = data['content'];
+          msgListTag.appendChild(imgTag);
+        }
+
+        else{
+          console.log('content')
+          console.log(data.content)
+          var msgListTag = document.createElement('li');
+          var pTag = document.createElement('p');
+          pTag.textContent = data.content;
+          msgListTag.appendChild(pTag);
+
+        }
+        if (author === username) {
+          msgListTag.className = 'sent';
+        } else {
+          msgListTag.className = 'replies';
+        }
+        
+        document.querySelector('#chat-log').appendChild(msgListTag);
+      } 
+      
+
+      document.querySelector('#chat-message-submit').onclick = function(e) {
+            const messageInputDom = document.querySelector('#chat-message-input');
+            const message = messageInputDom.value;
+            
+            chatSocket_dual.send(JSON.stringify({
+                'message': message,
+                'command': 'new_message',
+                'sender' : sender,
+                'reciever':reciever,
+                'roomname': roomName,
+                'username':sender
+            }));
+            messageInputDom.value = '';
+      };
+</script>
+{% endblock %}
+</html>

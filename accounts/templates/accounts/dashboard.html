@@ -41,6 +41,11 @@
     {% elif request.user.id != user.id and is_following %}
         <button id="following_btn" data-id="{{ user.id }}" style="display:block" class="btn btn-warning text-center mx-auto">unfollow</button>
     {% endif %}
+    <form action="{% url 'single_message:dual_room' user.id %}" method="post">
+        {% csrf_token %}
+       
+        <input type="submit"  value="Message">
+    </form>
 
     <br/><br/><br/>
     {% for post in posts %}
