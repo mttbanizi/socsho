@@ -28,7 +28,7 @@ def user_login(request):
 			if user is not None:
 				login(request, user)
 				messages.success(request, 'you logged in successfully', 'success')
-				return redirect('accounts:dashboard', user.id)
+				return redirect(request.GET.get('next'))
 			else:
 				messages.error(request, 'username or password is wrong', 'danger')
 	else:
@@ -56,7 +56,7 @@ def user_register(request):
 	return render(request, 'accounts/register.html', {'form':form})
 
 
-
+@login_required
 def user_dashboard(request, user_id):
 	user = get_object_or_404(User, pk=user_id)
 	posts = Post.objects.filter(user=user)

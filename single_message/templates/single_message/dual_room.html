@@ -68,7 +68,7 @@
           console.log('notif data:'+data);
           if(data['reciever'] == sender){
             if(data['__str__'] != sender ){
-                  console.log('notif is ok');
+                  console.log('notif : '+data['content']);
                   let divchat = document.getElementById('dropdown_chat_list');
                   let message_item = document.createElement("button");
                   let message_deail = document.createElement("div");
