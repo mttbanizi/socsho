@@ -28,7 +28,9 @@ def user_login(request):
 			if user is not None:
 				login(request, user)
 				messages.success(request, 'you logged in successfully', 'success')
-				return redirect(request.GET.get('next'))
+				if request.GET.get('next'):
+					return redirect(request.GET.get('next'))
+				return redirect('accounts:dashboard', user.id)
 			else:
 				messages.error(request, 'username or password is wrong', 'danger')
 	else:
