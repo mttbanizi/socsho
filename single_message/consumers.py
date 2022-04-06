@@ -1,4 +1,7 @@
+import email
 import json
+
+from django.http import request
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 from rest_framework.renderers import JSONRenderer
@@ -149,7 +152,7 @@ class ChatConsumer(WebsocketConsumer):
 
 
 class DualChatConsumer(WebsocketConsumer):
-
+    
     def message_serializer(self, qs):
     
         serialized = MessageSerializer(qs, many=(lambda qs : True if (qs.__class__.__name__ == 'QuerySet') else False)(qs))
@@ -185,31 +188,30 @@ class DualChatConsumer(WebsocketConsumer):
         roomname = data['roomname']
         print('fetch_message : '+roomname)
         qs = DualPayam.objects.filter(roomname= roomname)
-
-        
         print(25*'g')
         print(qs)
         message_json = self.message_serializer(qs)
         print(message_json)
-        content = {
-            
+        content = {            
             "content" : eval(message_json),
-            'command' : "fetch_message"
-            
+            'command' : "fetch_message"            
         }
         self.chat_message(content)
 
+    def unread_messages(self,data):
+        print ('unread_messages')
+        print(data)
+       
+
     commands = {
-        
         'fetch_message':fetch_message,
-        'new_message': new_message
-    
+        'new_message': new_message,
+        'unread_messages': unread_messages
     }
 
     def connect(self):
         self.room_name = self.scope['url_route']['kwargs']['room_name']
         self.room_group_name = 'chat_%s' % self.room_name
-
         # Join room group
         async_to_sync(self.channel_layer.group_add)(
             self.room_group_name,
