@@ -164,6 +164,9 @@ class DualChatConsumer(WebsocketConsumer):
         roomname =data['roomname']
         sender=User.objects.filter(email=data['sender']).last()
         reciever=User.objects.filter(email=data['reciever']).last()
+        
+        #if scope['user'] == text_data['reciever']:
+         #   DualPayam.objects.filter()
         message_model=DualPayam.objects.create(content=content, roomname=roomname,sender=sender,reciever=reciever)
         result = eval(self.message_serializer(message_model))
         self.notif_reciever(data)
@@ -179,7 +182,8 @@ class DualChatConsumer(WebsocketConsumer):
                     'type': 'chat_message',
                     'content': data['message'],
                     '__str__' : data['sender'],
-                    'reciever' :data['reciever']
+                    'reciever' :data['reciever'],
+                    'roomname': message_roomname
                 
                 }
             )    
@@ -262,10 +266,12 @@ class DualChatConsumer(WebsocketConsumer):
 
     # Receive message from room group
     def chat_message(self, event):
-        print(50*'wW')
+        text_data=json.dumps(event)
+        print(50*'wW'+' : ')
+        print(self.scope['user'])
         print (event)
-
+        print ( self.scope ) 
         # Send message to WebSocket
-        self.send(text_data=json.dumps(event))
+        self.send(text_data)
 
 
