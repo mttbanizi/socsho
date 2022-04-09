@@ -1,4 +1,8 @@
+import email
 import json
+from django.dispatch import receiver
+
+from django.http import request
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 from rest_framework.renderers import JSONRenderer
@@ -135,6 +139,7 @@ class ChatConsumer(WebsocketConsumer):
                 'content': message['content'],
                 'command':(lambda command : "img" if( command == "img") else "new_message")(command),
                 '__str__' : message['__str__'],
+                'room_name': self.room_name
              
             }
              
@@ -149,7 +154,7 @@ class ChatConsumer(WebsocketConsumer):
 
 
 class DualChatConsumer(WebsocketConsumer):
-
+    
     def message_serializer(self, qs):
     
         serialized = MessageSerializer(qs, many=(lambda qs : True if (qs.__class__.__name__ == 'QuerySet') else False)(qs))
@@ -161,6 +166,9 @@ class DualChatConsumer(WebsocketConsumer):
         roomname =data['roomname']
         sender=User.objects.filter(email=data['sender']).last()
         reciever=User.objects.filter(email=data['reciever']).last()
+        self.receiver=data['reciever']
+        #if scope['user'] == text_data['reciever']:
+         #   DualPayam.objects.filter()
         message_model=DualPayam.objects.create(content=content, roomname=roomname,sender=sender,reciever=reciever)
         result = eval(self.message_serializer(message_model))
         self.notif_reciever(data)
@@ -176,7 +184,8 @@ class DualChatConsumer(WebsocketConsumer):
                     'type': 'chat_message',
                     'content': data['message'],
                     '__str__' : data['sender'],
-                    'reciever' :data['reciever']
+                    'reciever' :data['reciever'],
+                    'roomname': message_roomname
                 
                 }
             )    
@@ -185,31 +194,49 @@ class DualChatConsumer(WebsocketConsumer):
         roomname = data['roomname']
         print('fetch_message : '+roomname)
         qs = DualPayam.objects.filter(roomname= roomname)
-
-        
         print(25*'g')
         print(qs)
         message_json = self.message_serializer(qs)
         print(message_json)
-        content = {
-            
+        content = {            
             "content" : eval(message_json),
-            'command' : "fetch_message"
-            
+            'command' : "fetch_message"            
         }
         self.chat_message(content)
 
+    def set_read(self,data):
+        print ('set_read')
+        print(data)
+        print (self.scope['user'])
+        qs= DualPayam.objects.filter(roomname=data['room_name']).last()
+        qs.is_read= True
+        qs.save()
+        print (qs.is_read)
+       
+
+    def unread_messages(self,data):
+         print ('unread_messages')
+         print(data)
+         receiver=User.objects.get(email=data['username'])
+         qs= DualPayam.objects.filter(reciever=receiver, is_read=False)
+         message_json = self.message_serializer(qs)
+         print(message_json)
+         content = {            
+            "content" : eval(message_json),
+            'command' : "unread_messages"            
+        }
+         self.chat_message(content)
+
     commands = {
-        
         'fetch_message':fetch_message,
-        'new_message': new_message
-    
+        'new_message': new_message,
+        'unread_messages': unread_messages,
+        'set_read': set_read
     }
 
     def connect(self):
         self.room_name = self.scope['url_route']['kwargs']['room_name']
         self.room_group_name = 'chat_%s' % self.room_name
-
         # Join room group
         async_to_sync(self.channel_layer.group_add)(
             self.room_group_name,
@@ -253,6 +280,8 @@ class DualChatConsumer(WebsocketConsumer):
                 'content': message['content'],
                 'command':(lambda command : "img" if( command == "img") else "new_message")(command),
                 '__str__' : message['__str__'],
+                'room_name': self.room_name,
+                'receiver': self.receiver
              
             }
              
@@ -260,10 +289,12 @@ class DualChatConsumer(WebsocketConsumer):
 
     # Receive message from room group
     def chat_message(self, event):
-        print(50*'wW')
+        text_data=json.dumps(event)
+        print(50*'wW'+' : ')
+        print(self.scope['user'])
         print (event)
-
+        #print ( self.scope ) 
         # Send message to WebSocket
-        self.send(text_data=json.dumps(event))
+        self.send(text_data)
 
 

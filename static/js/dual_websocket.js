@@ -60,16 +60,22 @@
           pTag.textContent = data.content;
           msgListTag.appendChild(pTag);
           console.log('content');
-          console.log(data.content);
+          console.log(data);
 
         }
         if (author === sender) {
           msgListTag.className = 'sent';
         } else {
           msgListTag.className = 'replies';
+          if (command =="new_message"){
+            data = {"command":"set_read", "sender": author, "reciever": sender, "room_name": data['room_name']};
+            chatSocket_dual.send(JSON.stringify(data));
+          }
+          
         }
         console.log('append');
         document.querySelector('#chat-log').appendChild(msgListTag);
+        
       } 
       
 

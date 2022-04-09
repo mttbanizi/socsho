@@ -1,7 +1,6 @@
 
       const sender = JSON.parse(document.getElementById('sender').textContent);
 
-
       const chatSocket2 = new WebSocket(
             'ws://'
             + window.location.host
@@ -18,15 +17,16 @@
       chatSocket2.onmessage = function(e) {
         
         var data = JSON.parse(e.data);
-          console.log('notif data:'+data);
+          console.log(data);
           if(data['reciever'] == sender){
             if(data['__str__'] != sender ){
                   console.log('notif : '+data['content']);
+                  
                   let divchat = document.getElementById('dropdown_chat_list');
                   let message_item = document.createElement("a");
                   let message_deail = document.createElement("div");
                   message_item.innerHTML=data['__str__'];
-                  message_item.href="../single_message/dual_room_email/' " + data['__str__'] + " %}";
+                  message_item.href='/' + data['__str__'] + "/";
                   console.log(message_item.href);
                   message_item.className="message_item_class";
                   message_deail.className="message_detail_class";
