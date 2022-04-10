@@ -1,5 +1,6 @@
 import email
 import json
+from django.dispatch import receiver
 
 from django.http import request
 from asgiref.sync import async_to_sync
@@ -138,6 +139,7 @@ class ChatConsumer(WebsocketConsumer):
                 'content': message['content'],
                 'command':(lambda command : "img" if( command == "img") else "new_message")(command),
                 '__str__' : message['__str__'],
+                'room_name': self.room_name
              
             }
              
@@ -164,7 +166,7 @@ class DualChatConsumer(WebsocketConsumer):
         roomname =data['roomname']
         sender=User.objects.filter(email=data['sender']).last()
         reciever=User.objects.filter(email=data['reciever']).last()
-        
+        self.receiver=data['reciever']
         #if scope['user'] == text_data['reciever']:
          #   DualPayam.objects.filter()
         message_model=DualPayam.objects.create(content=content, roomname=roomname,sender=sender,reciever=reciever)
@@ -202,15 +204,34 @@ class DualChatConsumer(WebsocketConsumer):
         }
         self.chat_message(content)
 
-    def unread_messages(self,data):
-        print ('unread_messages')
+    def set_read(self,data):
+        print ('set_read')
         print(data)
+        print (self.scope['user'])
+        qs= DualPayam.objects.filter(roomname=data['room_name']).last()
+        qs.is_read= True
+        qs.save()
+        print (qs.is_read)
        
+
+    def unread_messages(self,data):
+         print ('unread_messages')
+         print(data)
+         receiver=User.objects.get(email=data['username'])
+         qs= DualPayam.objects.filter(reciever=receiver, is_read=False)
+         message_json = self.message_serializer(qs)
+         print(message_json)
+         content = {            
+            "content" : eval(message_json),
+            'command' : "unread_messages"            
+        }
+         self.chat_message(content)
 
     commands = {
         'fetch_message':fetch_message,
         'new_message': new_message,
-        'unread_messages': unread_messages
+        'unread_messages': unread_messages,
+        'set_read': set_read
     }
 
     def connect(self):
@@ -259,6 +280,8 @@ class DualChatConsumer(WebsocketConsumer):
                 'content': message['content'],
                 'command':(lambda command : "img" if( command == "img") else "new_message")(command),
                 '__str__' : message['__str__'],
+                'room_name': self.room_name,
+                'receiver': self.receiver
              
             }
              
@@ -270,7 +293,7 @@ class DualChatConsumer(WebsocketConsumer):
         print(50*'wW'+' : ')
         print(self.scope['user'])
         print (event)
-        print ( self.scope ) 
+        #print ( self.scope ) 
         # Send message to WebSocket
         self.send(text_data)
 
