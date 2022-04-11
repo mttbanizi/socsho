@@ -71,6 +71,7 @@
         let divchat = document.getElementById('dropdown_chat_list');
         let message_item = document.createElement("a");
         let finder=":contains("+data['__str__']+")";
+        var is_exist=true;
         message_item.className="message_item_class";
         console.log(data['__str__']);
         if ($(".message_item_class").length){
@@ -78,30 +79,38 @@
             var exist_email=$(this).children(":first").text();
             console.log(data['content']);
             console.log(exist_email);
-            if(data['__str__']  ==exist_email ){
+            if(data['__str__']  == exist_email ){
               var message_deail= $("<p class='message_detail_class'></p>").text(data['content']);
-              console.log($(message_deail));
+              message_count=parseInt($(this).children("count").text())+1;
+              $(this).children("count").text(message_count);
+              is_exist=false;
+              console.log(message_count);
               $(this).append(message_deail);
               $(message_deail).hide();
               $(".message_item_class").hover(function(){
                 $(this).children('.message_detail_class').toggle();
               });
             }
+           
           });
+          
         }
-        else {
+        if (is_exist){
           let message_item = document.createElement("a");
           let message_deail = document.createElement("p");
+          let message_count = document.createElement("count");
           message_item.innerHTML="<span>"+data['__str__']+"</span>";
-          console.log(message_item.href);
+          console.log(message_item.innerHTML);
           message_item.className="message_item_class";
           message_deail.className="message_detail_class";
           message_deail.style.display='none';
           message_deail.innerHTML=data['content'];
+          message_count.innerHTML='1';
           divchat.appendChild(message_item);
           message_item.appendChild(message_deail);
-          
+          message_item.appendChild(message_count);
         }
+
         
         
       }
