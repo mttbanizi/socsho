@@ -69,7 +69,7 @@
           msgListTag.className = 'replies';
           if (command =="new_message"){
             data = {"command":"set_read", "sender": author, "reciever": sender, "room_name": data['room_name']};
-            chatSocket_dual.send(JSON.stringify(data));
+            chatSocket2.send(JSON.stringify(data));
           }
           
         }
