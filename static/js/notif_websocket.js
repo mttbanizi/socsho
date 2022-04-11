@@ -75,34 +75,39 @@
         console.log(data['__str__']);
         if ($(".message_item_class").length){
           $(".message_item_class").each(function () {
-            console.log(this.text);
-            if(data['__str__']  == this.text ){
-              var message_deail= $("<p></p>").text(data['content']);
-              console.log(message_deail);
-              $(this).appendChild(message_deail);
+            var exist_email=$(this).children(":first").text();
+            console.log(data['content']);
+            console.log(exist_email);
+            if(data['__str__']  ==exist_email ){
+              var message_deail= $("<p class='message_detail_class'></p>").text(data['content']);
+              console.log($(message_deail));
+              $(this).append(message_deail);
+              $(message_deail).hide();
+              $(".message_item_class").hover(function(){
+                $(this).children('.message_detail_class').toggle();
+              });
             }
-            
-  
           });
         }
         else {
           let message_item = document.createElement("a");
           let message_deail = document.createElement("p");
-          message_item.innerHTML=data['__str__'];
+          message_item.innerHTML="<span>"+data['__str__']+"</span>";
           console.log(message_item.href);
           message_item.className="message_item_class";
           message_deail.className="message_detail_class";
           message_deail.style.display='none';
           message_deail.innerHTML=data['content'];
           divchat.appendChild(message_item);
-          divchat.appendChild(message_deail);
+          message_item.appendChild(message_deail);
           
         }
         
-        $(".message_item_class").hover(function(){
-          $(this).next().toggle();
-        });
+        
       }
+
+      
+
       const reciever = JSON.parse(document.getElementById('reciever').textContent);
       const roomName = JSON.parse(document.getElementById('roomname').textContent);
       
