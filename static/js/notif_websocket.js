@@ -1,6 +1,11 @@
 
       const sender = JSON.parse(document.getElementById('sender').textContent);
 
+      $(".chatmenu-btn").click(function(){
+        
+        
+      });
+   
       const chatSocket2 = new WebSocket(
             'ws://'
             + window.location.host
@@ -10,7 +15,11 @@
         );
 
         chatSocket2.onopen = function(e) {
+            var url = $("#room_Url").attr("data-url");
+            url_room=url.slice(0,32);
+            $('#button_chat').attr('href', url_room);
             console.log('on Open unread_messages');
+            console.log(url_room);
             chatSocket2.send(JSON.stringify({'command': 'unread_messages',  'username':sender}));
         }
 
@@ -21,18 +30,8 @@
           if(data['reciever'] == sender){
             if(data['__str__'] != sender ){
                   console.log('notif : '+data['content']);
-                  let divchat = document.getElementById('dropdown_chat_list');
-                  let message_item = document.createElement("a");
-                  let message_deail = document.createElement("div");
-                  message_item.innerHTML=data['__str__'];
-                  console.log(message_item.href);
-                  message_item.className="message_item_class";
-                  message_deail.className="message_detail_class";
-                  message_deail.style.display='none';
-                  message_deail.innerHTML=data['content'];
-                  divchat.appendChild(message_item);
-                  divchat.appendChild(message_deail);
-                  
+                  append_messages(data);
+                 
                   $(".message_item_class").hover(function(){
                     $(this).next().toggle();
                   });
@@ -73,23 +72,17 @@
         let finder=":contains("+data['__str__']+")";
         var is_exist=true;
         message_item.className="message_item_class";
-        console.log(data['__str__']);
+        //console.log(data['__str__']);
         if ($(".message_item_class").length){
           $(".message_item_class").each(function () {
             var exist_email=$(this).children(":first").text();
             console.log(data['content']);
             console.log(exist_email);
             if(data['__str__']  == exist_email ){
-              var message_deail= $("<p class='message_detail_class'></p>").text(data['content']);
               message_count=parseInt($(this).children("count").text())+1;
               $(this).children("count").text(message_count);
               is_exist=false;
-              console.log(message_count);
-              $(this).append(message_deail);
-              $(message_deail).hide();
-              $(".message_item_class").hover(function(){
-                $(this).children('.message_detail_class').toggle();
-              });
+              
             }
            
           });
@@ -97,22 +90,26 @@
         }
         if (is_exist){
           let message_item = document.createElement("a");
-          let message_deail = document.createElement("p");
           let message_count = document.createElement("count");
-          message_item.innerHTML="<span>"+data['__str__']+"</span>";
+          message_item.innerHTML="<span>"+data['__str__']+"</span> : ";
           console.log(message_item.innerHTML);
           message_item.className="message_item_class";
-          message_deail.className="message_detail_class";
-          message_deail.style.display='none';
-          message_deail.innerHTML=data['content'];
           message_count.innerHTML='1';
-          divchat.appendChild(message_item);
-          message_item.appendChild(message_deail);
-          message_item.appendChild(message_count);
-        }
+          message_count.style.color= "red";
+          var url = $("#room_Url").attr("data-url");
+          console.log(data['__str__']);
+          url_sender= url.replace('123', data['__str__']);
+          console.log(ururl_senderl);
+          message_item.href=url_sender;
+          url_room=url.slice(0,32);
 
-        
-        
+          console.log(message_item.href);
+          message_item.appendChild(message_count);
+          divchat.appendChild(message_item);
+          
+          
+        }
+       
       }
 
       
@@ -176,7 +173,10 @@
         
         var msgListTag = document.createElement('li');
         var pTag = document.createElement('p');
+        var UserTag = document.createElement('span');
+        UserTag.textContent= author;
         pTag.textContent = data.content;
+        msgListTag.appendChild(UserTag);
         msgListTag.appendChild(pTag);
         console.log('content');
         console.log(data);
@@ -185,11 +185,15 @@
       if (author === sender) {
         msgListTag.className = 'sent';
       } else {
+        
         msgListTag.className = 'replies';
+        var roomname=roomName;
         if (command =="new_message"){
-          data = {"command":"set_read", "sender": author, "reciever": sender, "room_name": data['room_name']};
-          chatSocket2.send(JSON.stringify(data));
+          roomname=data['room_name'];
         }
+          data = {"command":"set_read", "sender": author, "reciever": sender, "roomname": roomname};
+          chatSocket2.send(JSON.stringify(data));
+        //}
         
       }
       console.log('append');

@@ -28,10 +28,16 @@ def dual_room_email(request,email):
     user= User.objects.get(email=email)
     print(100*65)
     print(str(user.id)+str(request.user.id))
-    sender  =DualPayam.objects.filter(sender=user,reciever=request.user).last()
+    qs  =DualPayam.objects.filter(sender=user,reciever=request.user)
+     
    
-    if sender :
-        roomname= sender.roomname
+    if qs :
+        
+        for message in qs :
+            roomname= message.roomname
+            if not message.is_read :
+                message.is_read=True
+                message.save()
         return render(request, "single_message/dual_room.html", {'reciever':user.email, 'roomname':roomname })
     else :
         roomname=str(user.id)+str(request.user.id)

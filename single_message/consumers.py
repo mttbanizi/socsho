@@ -1,8 +1,9 @@
-import email
 import json
 from django.dispatch import receiver
 
 from django.http import request
+from django.shortcuts import redirect
+from django.shortcuts import render
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 from rest_framework.renderers import JSONRenderer
@@ -200,7 +201,8 @@ class DualChatConsumer(WebsocketConsumer):
         print(message_json)
         content = {            
             "content" : eval(message_json),
-            'command' : "fetch_message"            
+            'command' : "fetch_message"
+                        
         }
         self.chat_message(content)
 
@@ -208,12 +210,12 @@ class DualChatConsumer(WebsocketConsumer):
         print ('set_read')
         print(data)
         print (self.scope['user'])
-        qs= DualPayam.objects.filter(roomname=data['room_name']).last()
-        qs.is_read= True
-        qs.save()
-        print (qs.is_read)
-       
-
+        qs= DualPayam.objects.filter(roomname=data['roomname'], is_read= False )
+        for message in qs :
+            message.is_read= True
+            message.save()
+            print (message.content)
+    
     def unread_messages(self,data):
          print ('unread_messages')
          print(data)
@@ -226,6 +228,10 @@ class DualChatConsumer(WebsocketConsumer):
             'command' : "unread_messages"            
         }
          self.chat_message(content)
+
+   
+
+
 
     commands = {
         'fetch_message':fetch_message,
