@@ -1,7 +1,11 @@
-from django.shortcuts import render
+from django.dispatch import receiver
+from django.shortcuts import render,redirect
 from accounts.models import User
 from .models import DualPayam
-from itertools import chain 
+from itertools import chain, count 
+from django.db.models import Q, Count
+
+
 
 def index(request):
     return render(request, 'single_message/index.html', {})
@@ -16,7 +20,6 @@ def dual_room_id(request,user_id):
     print(100*65)
     print(str(user_id)+str(request.user.id))
     sender  =DualPayam.objects.filter(sender=user,reciever=request.user).last()
-   
     if sender :
         roomname= sender.roomname
         return render(request, "single_message/dual_room.html", {'reciever':user.email, 'roomname':roomname })
@@ -26,10 +29,10 @@ def dual_room_id(request,user_id):
 
 def dual_room_email(request,email):
     user= User.objects.get(email=email)
-    print(100*65)
-    print(str(user.id)+str(request.user.id))
+    # print(100*65)
+    # print(str(user.id)+str(request.user.id))
     qs  =DualPayam.objects.filter(sender=user,reciever=request.user)
-     
+   
    
     if qs :
         
@@ -44,3 +47,13 @@ def dual_room_email(request,email):
         return render(request, "single_message/dual_room.html", {'reciever':user.email, 'roomname':roomname })    
 
    
+def dual_room(request):
+    chat_list=DualPayam.objects.raw('SELECT * FROM single_message_DualPayam GROUP BY roomname')
+    print ("chat list")
+
+    for a in chat_list:
+        print(a.roomname+' ; '+a.content)
+    # chat_list=DualPayam.objects.filter(Q(sender=request.user) | Q(reciever=request.user)).values()
+    # print (chat_list)
+    return redirect('home:all_home')
+

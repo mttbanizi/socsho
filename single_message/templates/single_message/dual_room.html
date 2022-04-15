@@ -6,32 +6,41 @@
 {% endblock %}
 
 {% block content %}
-<div id="frame">
-  <div class="content">
-    <div class="contact-profile">
-      <img src="" alt="" />
-      
-      <div class="social-media">
-        <i class="fa fa-facebook" aria-hidden="true"></i>
-        <i class="fa fa-twitter" aria-hidden="true"></i>
-        <i class="fa fa-instagram" aria-hidden="true"></i>
-      </div>
+
+  <div class="row">
+    <div class="col col-sm-">
+
     </div>
-    <div class="messages">
-      <ul id="chat-log">
-      </ul>
-    </div>
-    <div class="message-input">
-      <div class="wrap">
-        <input id="chat-message-input"   type="text" placeholder="Write your message..." />
-        <i class="fa fa-paperclip attachment" aria-hidden="true" onclick="document.getElementById('inp').click();"></i>
-        <button id="chat-message-submit" class="submit">
-          <i class="fa fa-paper-plane" aria-hidden="true"></i>
-        </button>
+    <div class="col col-sm-8">
+      <div id="frame">
+        <div class="content">
+          <div class="contact-profile">
+            <img src="" alt="" />
+            
+            <div class="social-media">
+              <i class="fa fa-facebook" aria-hidden="true"></i>
+              <i class="fa fa-twitter" aria-hidden="true"></i>
+              <i class="fa fa-instagram" aria-hidden="true"></i>
+            </div>
+          </div>
+          <div class="messages">
+            <ul id="chat-log">
+            </ul>
+          </div>
+          <div class="message-input">
+            <div class="wrap">
+              <input id="chat-message-input"   type="text" placeholder="Write your message..." />
+              <i class="fa fa-paperclip attachment" aria-hidden="true" onclick="document.getElementById('inp').click();"></i>
+              <button id="chat-message-submit" class="submit">
+                <i class="fa fa-paper-plane" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-</div>
+
 <input id="inp" type='file' style="display:none" />
 <p id="b64"></p>
     

@@ -17,6 +17,8 @@
         {% include 'inc/messages.html' %}
         {% block content %}{% endblock %}
         <input type="hidden" id="room_Url" data-url="{% url 'single_message:dual_room_email' 123 %}" />
+        <input type="hidden" id="list_room_Url" data-url="{% url 'single_message:dual_room'  %}" />
+
     </div>
     {% include 'inc/footer.html' %}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>

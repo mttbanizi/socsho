@@ -1,4 +1,3 @@
-
       const sender = JSON.parse(document.getElementById('sender').textContent);
 
       $(".chatmenu-btn").click(function(){
@@ -15,11 +14,11 @@
         );
 
         chatSocket2.onopen = function(e) {
-            var url = $("#room_Url").attr("data-url");
-            url_room=url.slice(0,32);
-            $('#button_chat').attr('href', url_room);
+            var url = $("#list_room_Url").attr("data-url");
+            
+            $('#button_chat').attr('href', url);
             console.log('on Open unread_messages');
-            console.log(url_room);
+            console.log(url);
             chatSocket2.send(JSON.stringify({'command': 'unread_messages',  'username':sender}));
         }
 
