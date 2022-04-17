@@ -9,7 +9,20 @@
 
   <div class="row">
     <div class="col col-sm-">
-
+      {% for chat in chat_list %}
+      <ul>
+        <li>
+          {% if chat.sender.id == request.user.id %}
+            <span>{{chat.sender.email}} </span>
+          {% else %}
+          <span>{{chat.reciever.email}} </span>
+          {% endif %}
+          <span> : {{chat.timestamp}} </span>
+          <p>{{chat.content}} </p>
+        </li>
+      </ul>
+      {% endfor %}
+      
     </div>
     <div class="col col-sm-8">
       <div id="frame">

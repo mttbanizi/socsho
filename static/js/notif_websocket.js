@@ -1,5 +1,10 @@
       const sender = JSON.parse(document.getElementById('sender').textContent);
 
+      $(".chatmenu-btn").click(function(){
+        
+        
+      });
+   
       const chatSocket2 = new WebSocket(
             'ws://'
             + window.location.host
@@ -95,7 +100,6 @@
           url_sender= url.replace('123', data['__str__']);
           console.log(url_sender);
           message_item.href=url_sender;
-          url_room=url.slice(0,26);
 
           console.log(message_item.href);
           message_item.appendChild(message_count);

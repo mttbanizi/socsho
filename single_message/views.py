@@ -1,3 +1,4 @@
+from optparse import Values
 from django.dispatch import receiver
 from django.shortcuts import render,redirect
 from accounts.models import User
@@ -48,8 +49,14 @@ def dual_room_email(request,email):
 
    
 def dual_room(request):
-    chat_list=DualPayam.objects.filter(Q(sender=request.user) | Q(reciever=request.user)).values('roomname').annotate(Count('id')).order_by('timestamp')
+    chat_list=DualPayam.objects.raw('SELECT * FROM single_message_DualPayam WHERE sender_id = '+str(request.user.id)+' OR reciever_id = '+str(request.user.id)+' GROUP BY roomname ORDER BY timestamp')
     print ("chat list")
     print (chat_list)
-    return redirect('home:home')
+
+    for a in chat_list:
+        roomname=a.roomname
+        print(a.roomname)
+    # chat_list=DualPayam.objects.filter(Q(sender=request.user) | Q(reciever=request.user)).values()
+    # print (chat_list)
+    return render(request, "single_message/dual_room.html", {'chat_list':chat_list, 'roomname':roomname  })    
 
