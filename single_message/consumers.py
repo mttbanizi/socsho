@@ -8,7 +8,8 @@ from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 from rest_framework.renderers import JSONRenderer
 from .serializers import MessageSerializer
-
+from django.utils.timezone import utc
+import datetime
 from .models import Room, Payam, DualPayam
 from accounts.models import User
 
@@ -26,17 +27,31 @@ class DualChatConsumer(WebsocketConsumer):
         sender=User.objects.filter(email=data['sender']).last()
         reciever=User.objects.filter(email=data['reciever']).last()
         self.receiver=data['reciever']
-        #if scope['user'] == text_data['reciever']:
-         #   DualPayam.objects.filter()
+        print(data['reciever'])
+        now = datetime.datetime.utcnow().replace(tzinfo=utc)
+        
         message_model=DualPayam.objects.create(content=content, roomname=roomname,sender=sender,reciever=reciever)
+        duration = now - message_model.timestamp
+        if duration.days//365 > 0 :
+            durations =str(duration.days//365) + ' years ago'
+        elif duration.days//12 > 0 :
+            durations =str(duration.days//12)+ ' months ago'
+        elif duration.days > 0 :
+            durations = str (duration.days)+' days ago'
+        elif duration.seconds//3600 > 1 :
+            durations = str(duration.seconds//3600) + ' hours ago'
+        else :
+            durations = 'now'
+        data['duration']=durations
+        print(duration)
         result = eval(self.message_serializer(message_model))
         self.notif_reciever(data)
         self.send_to_chat_message(result)
 
     def notif_reciever(self, data):
         message_roomname = data['roomname']
-        # print(20*'Nooo')   
-        # print(data)     
+        print(20*'Nooo')   
+        print(data)     
         async_to_sync(self.channel_layer.group_send)(
             'chat_listener',
                 {
@@ -44,7 +59,8 @@ class DualChatConsumer(WebsocketConsumer):
                     'content': data['message'],
                     '__str__' : data['sender'],
                     'reciever' :data['reciever'],
-                    'roomname': message_roomname
+                    'roomname': message_roomname,
+                    'duration': data['duration']
                 
                 }
             )    

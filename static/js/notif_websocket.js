@@ -1,9 +1,6 @@
       const sender = JSON.parse(document.getElementById('sender').textContent);
 
-      $(".chatmenu-btn").click(function(){
-        
-        
-      });
+      
    
       const chatSocket2 = new WebSocket(
             'ws://'
@@ -23,12 +20,14 @@
         }
 
       chatSocket2.onmessage = function(e) {
-        
-        var data = JSON.parse(e.data);
+       
+          var data = JSON.parse(e.data);
+          
           console.log(data);
           if(data['reciever'] == sender){
             if(data['__str__'] != sender ){
                   console.log('notif : '+data['content']);
+                  verify_chat_list (data);
                   append_messages(data);
                  
                   $(".message_item_class").hover(function(){
@@ -65,7 +64,24 @@
         } 
       }
 
+      function verify_chat_list(data){
+        var this_li=$('#chat_list_ul').find('li:contains("'+data['__str__']+'")');
+        if(this_li.length) {
+          console.log("verify_chat_list");
+          console.log(this_li.text());
+          $("#chat_list_ul").prepend(this_li);
+          this_li.children('span').text( data['duration']);
+          this_li.children('p').text(data['content']);
+          
+          //this_li.append("<span> : "+data['duration']+" </span><p>"+data['content']+" </p>");
+        }
+        else {
+          console.log("None verify");
+        }
+      }
+
       function append_messages(data){
+        
         let divchat = document.getElementById('dropdown_chat_list');
         let message_item = document.createElement("a");
         let finder=":contains("+data['__str__']+")";
@@ -98,7 +114,7 @@
           var url = $("#room_Url").attr("data-url");
           console.log(data['__str__']);
           url_sender= url.replace('123', data['__str__']);
-          console.log(ururl_senderl);
+          console.log(url_sender);
           message_item.href=url_sender;
 
           console.log(message_item.href);
@@ -112,7 +128,7 @@
 
       
 
-      const reciever = JSON.parse(document.getElementById('reciever').textContent);
+      var reciever = JSON.parse(document.getElementById('reciever').textContent);
       const roomName = JSON.parse(document.getElementById('roomname').textContent);
       
 
@@ -195,6 +211,7 @@
         
       }
       console.log('append');
+      
       document.querySelector('#chat-log').appendChild(msgListTag);
       
     } 
@@ -203,7 +220,7 @@
     document.querySelector('#chat-message-submit').onclick = function(e) {
           const messageInputDom = document.querySelector('#chat-message-input');
           const message = messageInputDom.value;
-          
+          console.log(reciever)
           chatSocket_dual.send(JSON.stringify({
               'message': message,
               'command': 'new_message',
@@ -213,4 +230,11 @@
               'username':sender
           }));
           messageInputDom.value = '';
-    };   
+    }; 
+  
+    $("button.email_chat").click(function(){
+      $('#chat-log').empty();
+      reciever=$(this).text();
+      console.log($(this).attr("data-room"));
+      chatSocket_dual.send(JSON.stringify({'command': 'fetch_message', 'roomname': $(this).attr("data-room"), 'username':sender}));    
+    });

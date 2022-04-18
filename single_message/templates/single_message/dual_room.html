@@ -9,19 +9,20 @@
 
   <div class="row">
     <div class="col col-sm-">
+      <ul id="chat_list_ul" >
       {% for chat in chat_list %}
-      <ul>
+      
         <li>
-          {% if chat.sender.id == request.user.id %}
-            <span>{{chat.sender.email}} </span>
-          {% else %}
-          <span>{{chat.reciever.email}} </span>
+          {% if chat.reciever.id == request.user.id %}
+            <button class="email_chat" data-room={{chat.roomname}} >{{chat.sender.email}}</button>
+          {% elif chat.sender.id == request.user.id %}
+          <button class="email_chat" data-room={{chat.roomname}} >{{chat.reciever.email}}</button>
           {% endif %}
           <span> : {{chat.timestamp}} </span>
           <p>{{chat.content}} </p>
         </li>
-      </ul>
       {% endfor %}
+    </ul>
       
     </div>
     <div class="col col-sm-8">
@@ -65,4 +66,7 @@
 <!-- <script src="{% static 'js\dual_websocket.js' %}" ></script> -->
 
 {% endblock %}
+<script>
+ 
+</script>
 </html>
