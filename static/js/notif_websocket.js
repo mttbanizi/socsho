@@ -100,7 +100,6 @@
           url_sender= url.replace('123', data['__str__']);
           console.log(ururl_senderl);
           message_item.href=url_sender;
-          url_room=url.slice(0,32);
 
           console.log(message_item.href);
           message_item.appendChild(message_count);
