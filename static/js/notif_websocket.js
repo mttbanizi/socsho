@@ -64,8 +64,17 @@
         } 
       }
 
+
       function verify_chat_list(data){
-        var this_li=$('#chat_list_ul').find('li:contains("'+data['__str__']+'")');
+        console.log('verify_chat_list');
+        console.log(data);
+        if (data['__str__'] == sender ){
+          reciever=data['reciever'];
+        } else {
+          reciever=data['__str__'];
+        }
+        var this_li=$('#chat_list_ul').find('li:contains("'+ reciever +'")');       
+        console.log(this_li);
         if(this_li.length) {
           console.log("verify_chat_list");
           console.log(this_li.text());
@@ -77,8 +86,13 @@
         }
         else {
           console.log("None verify");
+          new_li=$('#chat_list_ul').prepend('<li></li>');
+          new_li.children('li:first').append('<button class="email_chat" data-room="' + data['roomname'] + '">' + reciever +' </button>');
+          new_li.append('<span>'+ data['duration']+ '</span>');
+          new_li.append('<p>'+ data['content']+ '</p>');
         }
       }
+
 
       function append_messages(data){
         
@@ -129,7 +143,7 @@
       
 
       var reciever = JSON.parse(document.getElementById('reciever').textContent);
-      const roomName = JSON.parse(document.getElementById('roomname').textContent);
+      var roomName = JSON.parse(document.getElementById('roomname').textContent);
       
 
       const chatSocket_dual = new WebSocket(
@@ -149,6 +163,7 @@
 
       chatSocket_dual.onmessage = function(e) {
           const data = JSON.parse(e.data);
+          
        //   document.querySelector('#chat-log').value += (data.message + '\n');
           console.log('on_messgae');
         
@@ -174,7 +189,7 @@
       function createMessage(data) {
       var author = data["__str__"];
       var command = data['command'];
-
+      
       if(command == "img"){
 
         var msgListTag = document.createElement('li');
@@ -203,7 +218,7 @@
         msgListTag.className = 'replies';
         var roomname=roomName;
         if (command =="new_message"){
-          roomname=data['room_name'];
+          roomname=data['roomname'];
         }
           data = {"command":"set_read", "sender": author, "reciever": sender, "roomname": roomname};
           chatSocket2.send(JSON.stringify(data));
@@ -213,6 +228,7 @@
       console.log('append');
       
       document.querySelector('#chat-log').appendChild(msgListTag);
+      $("#chat-log").scrollTop($("#chat-log")[0].scrollHeight);
       
     } 
     
@@ -220,7 +236,17 @@
     document.querySelector('#chat-message-submit').onclick = function(e) {
           const messageInputDom = document.querySelector('#chat-message-input');
           const message = messageInputDom.value;
-          console.log(reciever)
+          console.log(reciever);
+         
+          var data={
+
+          
+           'duration': 'now',
+          '__str__': reciever,
+          'content': message,
+         
+          }
+          verify_chat_list(data);
           chatSocket_dual.send(JSON.stringify({
               'message': message,
               'command': 'new_message',
@@ -235,6 +261,8 @@
     $("button.email_chat").click(function(){
       $('#chat-log').empty();
       reciever=$(this).text();
-      console.log($(this).attr("data-room"));
-      chatSocket_dual.send(JSON.stringify({'command': 'fetch_message', 'roomname': $(this).attr("data-room"), 'username':sender}));    
+      roomName=$(this).attr("data-room")
+      
+      console.log(roomname);
+      chatSocket_dual.send(JSON.stringify({'command': 'fetch_message', 'roomname':roomName, 'username':sender}));    
     });

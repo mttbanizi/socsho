@@ -29,9 +29,12 @@ class DualChatConsumer(WebsocketConsumer):
         self.receiver=data['reciever']
         print(data['reciever'])
         now = datetime.datetime.utcnow().replace(tzinfo=utc)
-        
+        print (now)
         message_model=DualPayam.objects.create(content=content, roomname=roomname,sender=sender,reciever=reciever)
+        print (message_model.timestamp)
+        
         duration = now - message_model.timestamp
+        print(duration.seconds)
         if duration.days//365 > 0 :
             durations =str(duration.days//365) + ' years ago'
         elif duration.days//12 > 0 :
@@ -40,13 +43,28 @@ class DualChatConsumer(WebsocketConsumer):
             durations = str (duration.days)+' days ago'
         elif duration.seconds//3600 > 1 :
             durations = str(duration.seconds//3600) + ' hours ago'
-        else :
-            durations = 'now'
+        elif duration.seconds//60 > 0 :
+            durations = str(duration.seconds//60) + ' minuets ago'
+       
+        durations = 'now'
         data['duration']=durations
-        print(duration)
+        
         result = eval(self.message_serializer(message_model))
         self.notif_reciever(data)
-        self.send_to_chat_message(result)
+        command =data.get("command", None)
+        async_to_sync(self.channel_layer.group_send)(
+            'chat_listener',
+                {
+                    'type': 'chat_message',
+                    'content': content,
+                    '__str__' : sender.email,
+                    'reciever' :reciever.email,
+                    'roomname':roomname,
+                    'duration': durations,
+                    'command':(lambda command : "img" if( command == "img") else "new_message")(command),
+                
+                }
+            )   
 
     def notif_reciever(self, data):
         message_roomname = data['roomname']
@@ -61,14 +79,14 @@ class DualChatConsumer(WebsocketConsumer):
                     'reciever' :data['reciever'],
                     'roomname': message_roomname,
                     'duration': data['duration']
-                
+                    
                 }
             )    
 
     def fetch_message(self, data):
         roomname = data['roomname']
         # print('fetch_message : '+roomname)
-        qs = DualPayam.objects.filter(roomname= roomname)
+        qs = DualPayam.objects.filter(roomname= roomname).order_by("-timestamp")
         # print(25*'g')
         # print(qs)
         message_json = self.message_serializer(qs)
@@ -160,7 +178,7 @@ class DualChatConsumer(WebsocketConsumer):
                 'content': message['content'],
                 'command':(lambda command : "img" if( command == "img") else "new_message")(command),
                 '__str__' : message['__str__'],
-                'room_name': self.room_name,
+                #'roomname':message['roomname'],
                 'receiver': self.receiver
              
             }

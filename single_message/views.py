@@ -7,6 +7,7 @@ from itertools import chain, count
 from django.db.models import F , ExpressionWrapper, fields
 from django.utils.timezone import utc
 import datetime
+from django.contrib.auth.decorators import login_required
 
 
 def index(request):
@@ -16,7 +17,7 @@ def room(request, room_name):
     return render(request, 'single_message/room.html', {
         'room_name': room_name
     })
-
+@login_required
 def dual_room_id(request,user_id):
     user= User.objects.get(pk=user_id)
     print(100*65)
@@ -30,6 +31,7 @@ def dual_room_id(request,user_id):
         roomname=str(user_id)+str(request.user.id)
         return render(request, "single_message/dual_room.html", {'reciever':user.email, 'roomname':roomname, 'chat_list':chat_list })
 
+@login_required
 def dual_room_email(request,email):
     user= User.objects.get(email=email)
     # print(100*65)
@@ -50,7 +52,7 @@ def dual_room_email(request,email):
         roomname=str(user.id)+str(request.user.id)
         return render(request, "single_message/dual_room.html", {'reciever':user.email, 'roomname':roomname, 'chat_list':chat_list })    
 
-   
+@login_required
 def dual_room(request):
     chat_list=chat_list_maker(request) 
     print ("chat list")
@@ -62,7 +64,7 @@ def dual_room(request):
              reciever=a.sender.email
         else:
             reciever=a.reciever.email
-        print(a.timestamp)
+        break
     # chat_list=DualPayam.objects.filter(Q(sender=request.user) | Q(reciever=request.user)).values()
     # print (chat_list)
     return render(request, "single_message/dual_room.html", {'reciever':reciever, 'chat_list':chat_list, 'roomname':roomname  })    

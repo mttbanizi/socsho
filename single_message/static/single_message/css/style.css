@@ -78,6 +78,8 @@
     height: auto;
     min-height: calc(100% - 93px);
     max-height: calc(100% - 93px);
+    display: flex; 
+    flex-direction: column-reverse;
     overflow-y: scroll;
     overflow-x: hidden;
     width: 100%;
@@ -90,6 +92,7 @@
   #frame .content .messages::-webkit-scrollbar {
     width: 8px;
     background: transparent;
+    
   }
   #frame .content .messages::-webkit-scrollbar-thumb {
     background-color: rgba(0, 0, 0, 0.3);
