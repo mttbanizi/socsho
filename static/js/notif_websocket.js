@@ -88,8 +88,8 @@
           console.log("None verify");
           new_li=$('#chat_list_ul').prepend('<li></li>');
           new_li.children('li:first').append('<button class="email_chat" data-room="' + data['roomname'] + '">' + reciever +' </button>');
-          new_li.append('<span>'+ data['duration']+ '</span>');
-          new_li.append('<p>'+ data['content']+ '</p>');
+          new_li.children('li:first').append('<span>'+ data['duration']+ '</span>');
+          new_li.children('li:first').append('<p>'+ data['content']+ '</p>');
         }
       }
 
