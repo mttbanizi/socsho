@@ -1,4 +1,5 @@
 from email.policy import default
+from http.client import ACCEPTED
 from django.db import models
 
 
@@ -20,7 +21,7 @@ class User(AbstractBaseUser):
 	image = models.ImageField(upload_to='user/%Y/%m/%d/', default='profile.jpg' )
 	status = models.CharField(max_length=300, null=True, blank=True)
 	activity= models.CharField(max_length=100, null=True, blank=True)
-
+	private=models.BooleanField(default=False)
 	objects = MyUserManager()
 	USERNAME_FIELD = 'email'
 	REQUIRED_FIELDS = ['full_name']
@@ -50,6 +51,7 @@ class Relation(models.Model):
 	from_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='follower')
 	to_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='following')
 	created = models.DateTimeField(auto_now_add=True)
+	accepted=models.BooleanField(default=True)
 
 	class Meta:
 		ordering = ('-created',)

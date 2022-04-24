@@ -36,16 +36,25 @@
 
     
 
-    {% if request.user.id != user.id and not is_following %}
-        <button id="following_btn" data-id="{{ user.id }}" style="display:block" class="btn btn-primary text-center mx-auto">follow</button>
-    {% elif request.user.id != user.id and is_following %}
+    
+    {% if request.user.id != user.id and is_following  %}
         <button id="following_btn" data-id="{{ user.id }}" style="display:block" class="btn btn-warning text-center mx-auto">unfollow</button>
+    {% elif request.user.id != user.id and is_requested %}
+        <button id="following_btn" data-id="{{ user.id }}" style="display:block" class="btn btn-warning text-center mx-auto">follow request</button>
+    {% elif request.user.id != user.id %}
+        <button id="following_btn" data-id="{{ user.id }}" style="display:block" class="btn btn-primary text-center mx-auto">follow</button>
     {% endif %}
-    {% if request.user.id != user.id and not is_following %}
-        <form action="{% url 'single_message:dual_room_id' user.id %}" method="post">
+    <p >{{num_follower}} are following </p>
+    <p >{{num_following}} are followed </p>
+    
+    {% if request.user.id == user.id  %}
+        <a href="" >{{num_requests}} follow requests </a>
+    {% endif %}
+    {% if request.user.id != user.id  %}
+        <form action="{% url 'single_message:dual_room_id' user.id %}" method="post" class="btn btn-primary text-center mx-auto">
             {% csrf_token %}
         
-            <input type="submit"  value="Message">
+            <input type="submit"  value="Message" class="btn btn-primary text-center mx-auto">
         </form>
     {% endif %}
     <br/><br/><br/>

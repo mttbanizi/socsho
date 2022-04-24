@@ -64,16 +64,30 @@ def user_dashboard(request, user_id):
 	posts = Post.objects.filter(user=user)
 	self_dash = False
 	is_following = False
+	is_requested= False
 	print('******************************************************')
-	print (user_id)
+	
+	num_follower=Relation.objects.filter(to_user=user).count()
+	num_following=Relation.objects.filter(from_user=user).count()
+	num_requests=0
 	if request.user is not None :
 		
-		relation = Relation.objects.filter(from_user=request.user, to_user=user)
-		if relation.exists():
-			is_following = True
+		relation = Relation.objects.filter(from_user=request.user, to_user=user).last()
+		print (relation) 
+		if relation != None :
+			print (relation.accepted)
+			if relation.accepted :
+				is_following = True
+			else: 
+				is_requested = True
 	if request.user.id == user_id:
-			self_dash = True
-	return render(request, 'accounts/dashboard.html', {'user':user, 'posts':posts, 'self_dash':self_dash, 'is_following':is_following})
+		num_requests=Relation.objects.filter(to_user=request.user, accepted=False).count()
+		self_dash = True
+	print (is_requested)
+	return render(request, 'accounts/dashboard.html', {'user':user, 'posts':posts, 'self_dash':self_dash, 
+														'num_requests':num_requests, 'is_requested':is_requested,
+														 'is_following':is_following, 'num_follower':	num_follower, 
+														 'num_following': num_following })
 
 
 class ProfileUpdate(UpdateView):
@@ -90,7 +104,12 @@ class ProfileUpdate(UpdateView):
 def follow(request):
 	if request.method == 'POST':
 		user_id = request.POST['user_id']
+		
 		following = get_object_or_404(User, pk=user_id)
+		if following.private :
+			send_request = Relation.objects.create(from_user=request.user, to_user=following, accepted= False)
+			send_request.save()
+			return JsonResponse({'status':'private'})
 		check_relation = Relation.objects.filter(from_user=request.user, to_user=following)
 		if check_relation.exists():
 			return JsonResponse({'status':'exists'})			

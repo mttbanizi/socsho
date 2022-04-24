@@ -47,9 +47,13 @@ $('#following_btn').click(function(){
             'user_id': user_id,
         },
         success: function(data){
+            if(data['status'] == 'private'){
+                $('#following_btn').text("follow requested");
+                $('#following_btn').attr({'class':btn_class});
+            }
             if(data['status'] == 'ok'){
-                $('#following_btn').text(btn_text)
-                $('#following_btn').attr({'class':btn_class})
+                $('#following_btn').text(btn_text);
+                $('#following_btn').attr({'class':btn_class});
             }
         }
 
