@@ -1,6 +1,6 @@
-$('#following_btn').click(function(){
+$('#accept_request').click(function(){
     
-
+    console.log("clicked")
     function getCookie(name) {
         var cookieValue = null;
         if (document.cookie && document.cookie !== '') {
@@ -22,23 +22,14 @@ $('#following_btn').click(function(){
         // these HTTP methods do not require CSRF protection
         return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
     }
+      
+    var user_id = $('#accept_request').attr('data-id');
+    var btn_text = "accepted"
     
-   
-    
-    
-    var user_id = $('#following_btn').attr('data-id');
-    var follow = $('#following_btn').text();
-    
-    if(follow == 'follow'){
-        var url = '/accounts/follow/'
-        var btn_text = 'unfollow'
-        var btn_class = 'btn btn-warning text-center mx-auto'
-    }else{
-        var url = '/accounts/unfollow/'
-        var btn_text = 'follow'
-        var btn_class = 'btn btn-primary text-center mx-auto'
-    }
-    
+    var url = '/accounts/accept_request/';
+    var btn_class = 'btn btn-primary text-center mx-auto';
+        
+    console.log("clicked"); 
     $.ajax({
         url: url,
         method: 'POST',
@@ -47,13 +38,13 @@ $('#following_btn').click(function(){
             'user_id': user_id,
         },
         success: function(data){
-            if(data['status'] == 'private'){
-                $('#following_btn').text("follow requested");
-                $('#following_btn').attr({'class':btn_class});
-            }
+           
             if(data['status'] == 'ok'){
-                $('#following_btn').text(btn_text);
-                $('#following_btn').attr({'class':btn_class});
+                $('#accept_request').text(btn_text);
+                $('#accept_request').attr({'class':btn_class});
+            }
+            else {
+
             }
         }
 

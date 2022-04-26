@@ -16,7 +16,7 @@ from cart.forms import CartAddForm
 from .forms import AddProductForm, AddProductCommentForm, AddReplyProductForm, AddProductPhotoForm
 from accounts.models import User
 from .models import  ProdComment, ProdVote, Category, Product, ProductImage, ProductSpecificationValue, ProductSpecification, ProducVideo
-
+from posts.models import Post
 
 
 def shop_home(request, category_slug=None):
@@ -99,6 +99,11 @@ class AddProduct(LoginRequiredMixin, View):
 			for sp in category.C_product_secification.all() :
 				ProductSpecificationValue.objects.create(product=new_product,
 									specification=sp, value=request.POST.get(sp.name))
+			body=form.cleaned_data['title']+' ' + form.cleaned_data['description']
+			post=Post.objects.create(user=request.user, body=body, slug = new_product.slug, image=image)
+			if not post:
+				messages.error(request, 'post can\'t make', 'error')
+			post.save()
 			return redirect('home:all_home')
 		else:
 			# for field in form:

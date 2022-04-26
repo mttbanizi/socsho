@@ -57,17 +57,18 @@ def dual_room(request):
     chat_list=chat_list_maker(request) 
     print ("chat list")
     print (chat_list)
-
+    reciver =None
+    roomname=None
     for a in chat_list:
         roomname=a.roomname
         if a.reciever == request.user:
-             reciever=a.sender.email
+            reciver=a.sender.email
         else:
-            reciever=a.reciever.email
+            reciver=a.reciever.email
         break
     # chat_list=DualPayam.objects.filter(Q(sender=request.user) | Q(reciever=request.user)).values()
     # print (chat_list)
-    return render(request, "single_message/dual_room.html", {'reciever':reciever, 'chat_list':chat_list, 'roomname':roomname  })    
+    return render(request, "single_message/dual_room.html", {'reciever':reciver, 'chat_list':chat_list, 'roomname':roomname  })    
 
 def chat_list_maker(request):
     now = datetime.datetime.utcnow().replace(tzinfo=utc)
