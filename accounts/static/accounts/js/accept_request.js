@@ -1,4 +1,4 @@
-$('#accept_request').click(function(){
+$('.accept_request').click(function(){
     
     console.log("clicked")
     function getCookie(name) {
@@ -23,20 +23,14 @@ $('#accept_request').click(function(){
         return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
     }
       
-    var user_id = $('#accept_request').attr('data-id');
-<<<<<<< HEAD
+    var user_id = $(this).attr('data-id');
+    $(this).attr({id:"active_request"})
     var btn_text = "accepted"
     
     var url = '/accounts/accept_request/';
     var btn_class = 'btn btn-primary text-center mx-auto';
-=======
-    var btn_text = $('#accept_request').text();
-    
-    var url = '/accounts/accept_request/';
-    var btn_class = 'btn btn-warning text-center mx-auto';
->>>>>>> e286b611b3881f6f6d0103bb3e60525480923b3d
         
-    console.log("clicked"); 
+    console.log(user_id); 
     $.ajax({
         url: url,
         method: 'POST',
@@ -47,13 +41,10 @@ $('#accept_request').click(function(){
         success: function(data){
            
             if(data['status'] == 'ok'){
-<<<<<<< HEAD
-                $('#accept_request').text(btn_text);
-                $('#accept_request').attr({'class':btn_class});
-=======
-                $('#following_btn').text(btn_text);
-                $('#following_btn').attr({'class':btn_class});
->>>>>>> e286b611b3881f6f6d0103bb3e60525480923b3d
+                $("#active_request").text(btn_text);
+                $("#active_request").attr({'class':btn_class});
+                $("#active_request").attr({'id':"finnished"});
+
             }
             else {
 

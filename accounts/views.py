@@ -197,9 +197,10 @@ def accept_request(request):
 
 			user_id = request.POST['user_id']
 			follower = get_object_or_404(User, pk=user_id)
+			print (user_id)
 			check_relation = Relation.objects.filter(from_user=follower, to_user=request.user).last()
 			print(50*'f')
-			print (check_relation)
+			print (check_relation.from_user)
 			if check_relation:
 				check_relation.accepted = True
 				check_relation.save()

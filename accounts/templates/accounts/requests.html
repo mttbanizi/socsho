@@ -10,15 +10,15 @@
         {% for follower in follow_requests  %}
             {% if not follower.accepted %}
 
-        
-                    <li>
-                    <span>{{follower.from_user.email}} </span>
 
-                    </li>
-                    <li>
-                    <button id="accept_request" data-id="{{ follower.id }}" style="display:block" class="btn btn-warning text-center mx-auto">accept</button>
+                <li>
+                <span>{{follower.from_user.email}} </span>
 
-                    </li>
+                </li>
+                <li>
+                <button id="accept_request" data-id="{{ follower.from_user.id }}" style="display:block" class="accept_request btn btn-warning text-center mx-auto">accept {{ follower.from_user.id }} </button>
+
+                </li>
                      
             {% endif %}
         {% endfor %}
