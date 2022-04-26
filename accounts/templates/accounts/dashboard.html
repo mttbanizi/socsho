@@ -48,7 +48,7 @@
     <p >{{num_following}} are followed </p>
     
     {% if request.user.id == user.id  %}
-        <a href="" >{{num_requests}} follow requests </a>
+        <a href="{% url 'accounts:requests' %}" >{{num_requests}} follow requests </a>
     {% endif %}
     {% if request.user.id != user.id  %}
         <form action="{% url 'single_message:dual_room_id' user.id %}" method="post" class="btn btn-primary text-center mx-auto">

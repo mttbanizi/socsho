@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block js_files %}
+    <script src="{% static 'accounts/js/accept_request.js' %}"></script>
+{% endblock %}
+{% block content %}
+    <p>Friend requests</p>
+    <ul>
+        {% for follower in follow_requests  %}
+            {% if not follower.accepted %}
+
+        
+                    <li>
+                    <span>{{follower.from_user.email}} </span>
+
+                    </li>
+                    <li>
+                    <button id="accept_request" data-id="{{ follower.id }}" style="display:block" class="btn btn-warning text-center mx-auto">accept</button>
+
+                    </li>
+                     
+            {% endif %}
+        {% endfor %}
+    </ul>
+{% endblock %}

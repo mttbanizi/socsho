@@ -6,7 +6,6 @@ from django.views.generic.edit import UpdateView
 from django.views.generic import DetailView
 from django.urls import reverse
 from django.http import JsonResponse
-from django.contrib.auth.mixins import LoginRequiredMixin
 import os
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import views as auth_views
@@ -185,3 +184,23 @@ class UserPasswordResetConfirmView(auth_views.PasswordResetConfirmView):
 
 class UserPasswordResetCompleteView(auth_views.PasswordResetCompleteView):
 	template_name = 'accounts/password_reset_complete.html'
+
+class follow_requests(LoginRequiredMixin, View):
+	def get(self,request):
+		follow_requests=Relation.objects.filter(to_user=request.user, accepted=False)
+		
+		return render(request,'accounts/requests.html', {'follow_requests': follow_requests,} )
+
+def accept_request(request):
+	
+		if request.method == 'POST':
+
+			user_id = request.POST['user_id']
+			follower = get_object_or_404(User, pk=user_id)
+			check_relation = Relation.objects.filter(from_user=follower, to_user=request.user)
+			print (check_relation)
+			if check_relation.exists():
+				check_relation.accepted = True
+				return JsonResponse({'status':'ok'})
+			else:
+				return JsonResponse({'status':'notexists'})

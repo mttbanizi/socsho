@@ -56,5 +56,5 @@ class Relation(models.Model):
 	class Meta:
 		ordering = ('-created',)
 
-	def __str__(self):
-		return f'{self.from_user} following {self.to_user}'
+	# def __str__(self):
+	# 	return f'{self.from_user} following {self.to_user}'
