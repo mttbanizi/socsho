@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block js_files %}
+    <script src="{% static 'accounts/js/cancel_following.js' %}"></script>
+    <script src="{% static 'accounts/js/scripts.js' %}"></script>
+{% endblock %}
+{% block content %}
+    <p>following</p>
+    <ul>
+        {% for follower in followeing  %}
+            {% if  follower.accepted %}
+                <li><span>{{follower.to_user.email}} </span></li>
+                <li>
+                <button id="cancel_following" data-id="{{ follower.to_user.id }}" style="display:block" class="cancel_following btn btn-warning text-center mx-auto">cancel request following {{ follower.from_user.id }} </button>
+                </li>
+            {% else %}
+                <li>
+                    <span>{{follower.to_user.email}} </span>
+                </li>
+                <li>
+                    <button id="cancel_following" data-id="{{ follower.to_user.id }}" style="display:block" class="cancel_following btn btn-warning text-center mx-auto">cancel following {{ follower.from_user.id }} </button>
+                </li>
+            {% endif %}     
+        
+        {% endfor %}
+    </ul>
+{% endblock %}

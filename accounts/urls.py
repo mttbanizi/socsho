@@ -21,6 +21,12 @@ urlpatterns = [
 	path('confirm/complete', views.UserPasswordResetCompleteView.as_view(), name='password_reset_complete'),
 	path('requests/', views.follow_requests.as_view(), name='requests'),
 	path('accept_request/', views.accept_request, name='accept_request'),
+	path('follower_list/', views.follower_list.as_view(), name='follower_list'),
+	path('reject_follow/', views.reject_follow, name='reject_follow'),
+
+	path('following_list/', views.following_list.as_view(), name='following_list'),
+	path('cancel_following/', views.cancel_following, name='cancel_following'),
+
 
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
