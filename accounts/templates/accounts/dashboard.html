@@ -44,8 +44,8 @@
     {% elif request.user.id != user.id %}
         <button id="following_btn" data-id="{{ user.id }}" style="display:block" class="btn btn-primary text-center mx-auto">follow</button>
     {% endif %}
-    <p >{{num_follower}} are following </p>
-    <p >{{num_following}} are followed </p>
+    <a href="{% url 'accounts:following_list' %}"  >{{num_follower}} are following </p>
+    <a href="{% url 'accounts:follower_list' %}" >{{num_following}} are followed </p>
     
     {% if request.user.id == user.id  %}
         <a href="{% url 'accounts:requests' %}" >{{num_requests}} follow requests </a>

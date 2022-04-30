@@ -19,6 +19,12 @@ from .forms import UserLoginForm, UserRegistrationForm, ProfileShowPhoto
 
 
 def user_login(request):
+	print (50*'L')
+	print (request.user.is_authenticated)
+	if request.user.is_authenticated:
+		if request.GET.get('next'):
+			return redirect(request.GET.get('next'))
+		return redirect('accounts:dashboard', request.user.id)
 	if request.method == 'POST':
 		form = UserLoginForm(request.POST)
 		if form.is_valid():
@@ -185,6 +191,7 @@ class UserPasswordResetConfirmView(auth_views.PasswordResetConfirmView):
 class UserPasswordResetCompleteView(auth_views.PasswordResetCompleteView):
 	template_name = 'accounts/password_reset_complete.html'
 
+
 class follow_requests(LoginRequiredMixin, View):
 	def get(self,request):
 		follow_requests=Relation.objects.filter(to_user=request.user, accepted=False)
@@ -205,6 +212,56 @@ def accept_request(request):
 				check_relation.accepted = True
 				check_relation.save()
 				print("relation exist")
+				return JsonResponse({'status':'ok'})
+			else:
+				return JsonResponse({'status':'notexists'})
+
+
+
+class follower_list(LoginRequiredMixin, View):
+	def get(self,request):
+		followers=Relation.objects.filter(to_user=request.user, accepted=True)
+		
+		return render(request,'accounts/follower_list.html', {'followers': followers,} )
+
+
+def reject_follow(request):
+	
+		if request.method == 'POST':
+
+			user_id = request.POST['user_id']
+			follower = get_object_or_404(User, pk=user_id)
+			print (user_id)
+			check_relation = Relation.objects.filter(from_user=follower, to_user=request.user).last()
+			print(50*'f')
+			print (check_relation.from_user)
+			if check_relation:
+				check_relation.delete()
+				print("relation deleted")
+				return JsonResponse({'status':'ok'})
+			else:
+				return JsonResponse({'status':'notexists'})
+
+
+class following_list(LoginRequiredMixin, View):
+	def get(self,request):
+		followeing=Relation.objects.filter(from_user=request.user)
+		print(followeing)
+		return render(request,'accounts/followeing_list.html', {'followeing': followeing,} )
+
+def cancel_following(request):
+	
+		if request.method == 'POST':
+
+			user_id = request.POST['user_id']
+			follower = get_object_or_404(User, pk=user_id)
+			print (user_id)
+			check_relation = Relation.objects.filter(to_user=follower, from_user=request.user).last()
+			print(50*'f')
+			print (check_relation.from_user)
+			if check_relation:
+				check_relation.delete()
+				print("relation deleted")
 				return JsonResponse({'status':'ok'})
 			else:
 				return JsonResponse({'status':'notexists'})

@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block js_files %}
+    <script src="{% static 'accounts/js/reject_follow.js' %}"></script>
+{% endblock %}
+{% block content %}
+    <p>Friend requests</p>
+    <ul>
+        {% for follower in followers  %}
+            {% if  follower.accepted %}
+
+
+                <li>
+                <span>{{follower.from_user.email}} </span>
+
+                </li>
+                <li>
+                <button id="reject_follow" data-id="{{ follower.from_user.id }}" style="display:block" class="reject_follow btn btn-warning text-center mx-auto">reject_follow {{ follower.from_user.id }} </button>
+
+                </li>
+                     
+            {% endif %}
+        {% endfor %}
+    </ul>
+{% endblock %}
