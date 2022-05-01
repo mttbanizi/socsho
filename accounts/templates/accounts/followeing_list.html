@@ -9,7 +9,7 @@
     <p>following</p>
     <ul>
         {% for follower in followeing  %}
-            {% if  follower.accepted %}
+            {% if not  follower.accepted %}
                 <li><span>{{follower.to_user.email}} </span></li>
                 <li>
                 <button id="cancel_following" data-id="{{ follower.to_user.id }}" style="display:block" class="cancel_following btn btn-warning text-center mx-auto">cancel request following {{ follower.from_user.id }} </button>
