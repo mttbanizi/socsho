@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'mptt',
     'sorl.thumbnail',
     'rest_framework',
+    'django_elasticsearch_dsl',
+    
 
     # apps
     'accounts.apps.AccountsConfig',
@@ -52,6 +54,7 @@ INSTALLED_APPS = [
     'home.apps.HomeConfig',
     'chat',
     'single_message',
+    'search.apps.SearchConfig',
 
 ]
 
@@ -123,7 +126,14 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Elasticsearch
+# https://django-elasticsearch-dsl.readthedocs.io/en/latest/settings.html
 
+ELASTICSEARCH_DSL = {
+    'default': {
+        'hosts': 'localhost:9200'
+    },
+}
 
 
 # Internationalization

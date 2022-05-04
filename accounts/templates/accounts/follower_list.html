@@ -5,7 +5,8 @@
     <script src="{% static 'accounts/js/reject_follow.js' %}"></script>
 {% endblock %}
 {% block content %}
-    <p>Friend requests</p>
+    <p>followrs</p>
+    
     <ul>
         {% for follower in followers  %}
             {% if  follower.accepted %}

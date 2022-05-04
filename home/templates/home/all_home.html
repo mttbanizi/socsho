@@ -115,7 +115,7 @@
                         <img src="{{ img.url }}" class="card-img-top">
                     {% endthumbnail %}
                     <p class="card-body">
-                        <a href="{% url 'accounts:dashboard' post.user.id %}">
+                        <a href="{% url 'accounts:others_dashboard' post.user.id %}">
                             {{ post.user }}:
                         </a>
                         <a style="color:darkgrey" href="{{ post.get_absolute_url }}">

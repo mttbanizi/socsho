@@ -10,6 +10,7 @@ urlpatterns = [
 	path('logout/', views.user_logout, name='logout'),
 	path('register/', views.user_register, name='register'),
 	path('dashboard/<int:user_id>/', views.user_dashboard, name='dashboard'),
+	path('others_dashboard/<int:user_id>/', views.others_dashboard, name='others_dashboard'),
 	path('profile_update/<int:pk>/', views.ProfileUpdate.as_view(), name='profile_update'),
 	path('follow/', views.follow, name='follow'),
 	path('unfollow/', views.unfollow, name='unfollow'),

@@ -10,15 +10,7 @@
 {% endblock %}
 
 {% block content %}
-    {% if self_dash %}
-        <table>
-            <li><a href="{% url 'posts:add_post' request.user.id %}">Add post</a></li>
-            <li><a href="{% url 'shop:add_product' request.user.id %}">Add Product</a></li>
-            <li><a href="{% url 'shop:manage_products' request.user.id %}">Manage product </a></li>
 
-            <li><a href="{% url 'accounts:profile_update' request.user.id %}">Edit Profile</a></li>
-        </table>
-    {% endif %}
 
     <div class="card text-center" style="width: 18rem; display:inline-block">
         {% thumbnail user.image "300x300" as img %}
@@ -47,10 +39,14 @@
     <a href="{% url 'accounts:following_list' %}"  >{{num_following}}  are following </p>
     <a href="{% url 'accounts:follower_list' %}" >{{num_follower}} are follower  </p>
     
-    {% if request.user.id == user.id  %}
-        <a href="{% url 'accounts:requests' %}" >{{num_requests}} follow requests </a>
-    {% endif %}
     
+    {% if request.user.id != user.id  %}
+        <form action="{% url 'single_message:dual_room_id' user.id %}" method="post" class="btn btn-primary text-center mx-auto">
+            {% csrf_token %}
+        
+            <input type="submit"  value="Message" class="btn btn-primary text-center mx-auto">
+        </form>
+    {% endif %}
     <br/><br/><br/>
     {% for post in posts %}
         <div class="card">

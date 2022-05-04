@@ -62,18 +62,13 @@ def user_register(request):
 		form = UserRegistrationForm()
 	return render(request, 'accounts/register.html', {'form':form})
 
-
-@login_required
-def user_dashboard(request, user_id):
+def others_dashboard(request, user_id):
 	user = get_object_or_404(User, pk=user_id)
 	posts = Post.objects.filter(user=user)
-	self_dash = False
 	is_following = False
 	is_requested= False
-	print('******************************************************')
-	
-	num_follower=Relation.objects.filter(to_user=user).count()
-	num_following=Relation.objects.filter(from_user=user).count()
+	num_follower=Relation.objects.filter(to_user=user, accepted=True).count()
+	num_following=Relation.objects.filter(from_user=user, accepted=True).count()
 	num_requests=0
 	if request.user is not None :
 		
@@ -85,14 +80,27 @@ def user_dashboard(request, user_id):
 				is_following = True
 			else: 
 				is_requested = True
-	if request.user.id == user_id:
-		num_requests=Relation.objects.filter(to_user=request.user, accepted=False).count()
-		self_dash = True
+	
 	print (is_requested)
-	return render(request, 'accounts/dashboard.html', {'user':user, 'posts':posts, 'self_dash':self_dash, 
+	return render(request, 'accounts/dashboard.html', {'user':user, 'posts':posts, 
 														'num_requests':num_requests, 'is_requested':is_requested,
 														 'is_following':is_following, 'num_follower':	num_follower, 
 														 'num_following': num_following })
+
+@login_required
+def user_dashboard(request, user_id):
+	user = get_object_or_404(User, pk=user_id)
+	posts = Post.objects.filter(user=user)
+	self_dash = False
+	
+	print('******************************************************')
+	
+	num_follower=Relation.objects.filter(to_user=user, accepted=True).count()
+	num_following=Relation.objects.filter(from_user=user, accepted=True).count()
+	num_requests=0
+	
+	return render(request, 'accounts/dashboard.html', {'user':user, 'posts':posts, 'self_dash':self_dash, 
+													'num_follower':	num_follower,  'num_following': num_following })
 
 
 class ProfileUpdate(UpdateView):
