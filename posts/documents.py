@@ -7,12 +7,12 @@ from posts.models import Post
 
 @registry.register_document
 class PostDocument(Document):
-    author = fields.ObjectField(properties={
-        
+    post = fields.ObjectField(properties={
+        'body':fields.TextField(),
         'slug':fields.TextField(),
     })
     class Index:
-        name = 'posts'
+        name = 'post'
         settings = {
             'number_of_shards': 1,
             'number_of_replicas': 0,
@@ -21,7 +21,7 @@ class PostDocument(Document):
     class Django:
         model = Post
         fields = [
-            
+            'body',
             'slug',            
            
         ]
