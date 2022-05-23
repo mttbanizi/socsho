@@ -27,6 +27,7 @@ urlpatterns = [
     path('search/', include('search.urls', namespace='search')),
     # path('orders/', include('orders.urls', namespace='orders')),
     path('', include('shop.urls', namespace='shop')),
+    path('drf/posts/', include('posts.drf.urls', namespace='post_drf')),
 
     
 
