@@ -91,7 +91,7 @@ def others_dashboard(request, user_id):
 def user_dashboard(request, user_id):
 	user = get_object_or_404(User, pk=user_id)
 	posts = Post.objects.filter(user=user)
-	self_dash = False
+	self_dash = True
 	
 	print('******************************************************')
 	

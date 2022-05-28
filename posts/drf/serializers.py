@@ -5,6 +5,7 @@ from posts.models import Post
 
 
 class PostSerializer(serializers.ModelSerializer):
+    #image = serializers.ImageField(required=False)
     class Meta:
         model = Post
-        fields = ('body','slug')
+        fields = ('body','slug','user')

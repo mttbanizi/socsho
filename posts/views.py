@@ -23,8 +23,8 @@ def all_posts(request, slug=None):
 
 # redis_con = redis.Redis(settings.REDIS_HOST, settings.REDIS_PORT, settings.REDIS_DB)
 
-def post_detail(request, year, month, day, slug):
-	post = get_object_or_404(Post, created__year=year, created__month=month, created__day=day, slug=slug)
+def post_detail(request, year, month, day, post_id):
+	post = get_object_or_404(Post, created__year=year, created__month=month, created__day=day, pk=post_id)
 	comments = Comment.objects.filter(post=post, is_reply=False)
 	reply_form = AddReplyForm()
 	# redis_con.hsetnx('post_views', post.id, 0)
@@ -79,7 +79,7 @@ def add_post(request, user_id):
 			if form.is_valid():
 				new_post = form.save(commit=False)
 				new_post.user = request.user
-				new_post.slug = slugify(form.cleaned_data['body'][:30])
+				new_post.slug = slugify(form.cleaned_data['body'][:30], allow_unicode=True)
 				new_post.save()
 				messages.success(request, 'your post submitted', 'success')
 				return redirect('accounts:dashboard', user_id)

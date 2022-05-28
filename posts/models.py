@@ -9,7 +9,7 @@ class Post(models.Model):
     objects = models.Manager()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     body = models.TextField(max_length=500)
-    slug = models.SlugField(max_length=200)
+    slug = models.SlugField(max_length=200, allow_unicode=True)
     created = models.DateTimeField(auto_now_add=True)
     image = models.ImageField(upload_to='posts/%Y/%m/%d/',null=True, blank=True)
 
@@ -17,7 +17,7 @@ class Post(models.Model):
         return f'{self.user} - {self.body[:30]}'
 
     def get_absolute_url(self):
-        return reverse('posts:post_detail', args=[self.created.year, self.created.month, self.created.day, self.slug])
+        return reverse('posts:post_detail', args=[self.created.year, self.created.month, self.created.day, self.pk])
 
     def likes_count(self):
         return self.pvote.count()
