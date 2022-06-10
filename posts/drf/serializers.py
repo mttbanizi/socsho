@@ -8,4 +8,4 @@ class PostSerializer(serializers.ModelSerializer):
     #image = serializers.ImageField(required=False)
     class Meta:
         model = Post
-        fields = ('body','slug','user')
+        fields = ('body','slug','image' ,'user')

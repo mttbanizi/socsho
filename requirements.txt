@@ -28,7 +28,6 @@ incremental==21.3.0
 msgpack==1.0.3
 Pillow==8.4.0
 pipreqs==0.4.11
-psycopg2==2.8.6
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
 pycparser==2.21
@@ -42,8 +41,7 @@ six==1.16.0
 sorl-thumbnail==12.7.0
 sqlparse==0.4.2
 suds==1.0.0
-Twisted==22.2.0
-twisted-iocpsupport==1.0.2
+
 txaio==22.2.1
 typing_extensions==4.1.1
 tzdata==2021.5

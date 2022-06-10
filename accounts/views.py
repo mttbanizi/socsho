@@ -62,6 +62,7 @@ def user_register(request):
 		form = UserRegistrationForm()
 	return render(request, 'accounts/register.html', {'form':form})
 
+@login_required
 def others_dashboard(request, user_id):
 	user = get_object_or_404(User, pk=user_id)
 	posts = Post.objects.filter(user=user)
