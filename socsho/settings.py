@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'sorl.thumbnail',
     'rest_framework',
     # 'django_elasticsearch_dsl',
+    'rest_framework.authtoken',
     
 
     # apps
@@ -188,3 +189,13 @@ EMAIL_PORT = 587
 EMAIL_HOST_PASSWORD = 'mtuqsicbzrvusszp'
 EMAIL_USE_TLS = True
 DEAFAULT_FROM_USER ='SOCSHO WEBSITE'
+
+#rest framework
+REST_FRAMEWORK = {
+   'DEFAULT_AUTHENTICATION_CLASSES': (
+       'rest_framework.authentication.TokenAuthentication',
+   ),
+   'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAdminUser',
+   ),
+}

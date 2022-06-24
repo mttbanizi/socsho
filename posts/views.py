@@ -131,7 +131,7 @@ def add_reply(request, post_id, comment_id):
 			reply.is_reply = True
 			reply.save()
 			messages.success(request, 'your reply submitted successfully', 'success')
-	return redirect('posts:post_detail', post.created.year, post.created.month, post.created.day, post.slug)
+	return redirect('posts:post_detail', post.created.year, post.created.month, post.created.day, post.id)
 
 
 @login_required
@@ -140,7 +140,7 @@ def post_like(request, post_id):
 	like = Vote(post=post, user=request.user)
 	like.save()
 	messages.success(request, 'you liked successfully', 'success')
-	return redirect('posts:post_detail', post.created.year, post.created.month, post.created.day, post.slug)
+	return redirect('posts:post_detail', post.created.year, post.created.month, post.created.day, post.id)
 
 
 @login_required
@@ -148,7 +148,7 @@ def post_dislike(request, post_id):
 	post = get_object_or_404(Post, id=post_id)
 	dislike = Vote.objects.filter(post=post, user=request.user).delete()
 	messages.success(request, 'you disliked successfully', 'warning')
-	return redirect('posts:post_detail', post.created.year, post.created.month, post.created.day, post.slug)
+	return redirect('posts:post_detail', post.created.year, post.created.month, post.created.day, post.id)
 
 
 

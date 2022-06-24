@@ -27,7 +27,12 @@ urlpatterns = [
     path('search/', include('search.urls', namespace='search')),
     # path('orders/', include('orders.urls', namespace='orders')),
     path('', include('shop.urls', namespace='shop')),
+    
+    #django rest framework urls
     path('drf/posts/', include('posts.drf.urls', namespace='post_drf')),
+    path('drf/accounts/', include('accounts.drf.urls', namespace='accounts_drf')),
+    path('drf/shop/', include('shop.drf.urls', namespace='shop_drf')),
+
 
     
 
