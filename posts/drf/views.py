@@ -14,7 +14,7 @@ from posts.models import Comment, Post, Vote
 
 
 class AllPosts(APIView):
-    permission_classes = [IsAuthenticated,]
+    # permission_classes = [IsAuthenticated,]
 
     def get(self, request):
         queryset=Post.objects.all()
@@ -108,7 +108,7 @@ class PostLike(APIView):
         vote=Vote.objects.filter(post__id=post_id, user=request.user).last()
         if vote:
             return Response({'liked':'like'}, status=status.HTTP_200_OK)
-        return Response({'liked':'dislike'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'liked':'dislike'}, status=status.HTTP_200_OK)
 
     def post(self,request,post_id):
         post = get_object_or_404(Post, id=post_id)

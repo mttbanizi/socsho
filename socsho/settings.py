@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-p$jcd0&o$4j1#8_)g(ncns$hlh(85!ep#!@)m*7@x#kx%0mpm4
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['0.0.0.0','192.168.1.6', 'localhost', '127.0.0.1','10.0.2.2']
 
 
 # Application definition
@@ -193,7 +193,7 @@ DEAFAULT_FROM_USER ='SOCSHO WEBSITE'
 #rest framework
 REST_FRAMEWORK = {
    'DEFAULT_AUTHENTICATION_CLASSES': (
-       'rest_framework.authentication.TokenAuthentication',
+      'rest_framework.authentication.TokenAuthentication',
    ),
    'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAdminUser',
