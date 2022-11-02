@@ -39,8 +39,8 @@ class ObtainAuthToken(APIView):
 
 class GetUsername(APIView):
 
-    # permission_classes = [IsAuthenticated,]
-
+    #  permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated,]
     def get(self, request,user_id):
         queryset=get_object_or_404(User,pk=user_id)
         serializer=GetUsernameSerializer(queryset)

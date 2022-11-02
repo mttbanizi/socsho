@@ -14,10 +14,10 @@ from posts.models import Comment, Post, Vote
 
 
 class AllPosts(APIView):
-    # permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated,]
 
     def get(self, request):
-        queryset=Post.objects.all()
+        queryset=Post.objects.filter(user=request.user)
         serializer=PostSerializer(queryset, many=True)
         return Response(serializer.data)
 
