@@ -8,16 +8,23 @@ from rest_framework.parsers import MultiPartParser, FormParser
 #from permissions import IsOwnerOrReadOnly
 from django.utils.text import slugify
 from django.shortcuts import get_object_or_404
+from django.db.models import Q
 
 from .serializers import PostSerializer, PostCommentsSerializers
 from posts.models import Comment, Post, Vote
+from accounts.models import Relation
 
 
 class AllPosts(APIView):
     permission_classes = [IsAuthenticated,]
 
     def get(self, request):
-        queryset=Post.objects.filter(user=request.user)
+        # following = Relation.objects.filter(from_user=request.user, accepted=True)
+        print (request.user)
+        queryset=Post.objects.filter(Q(user=request.user) |
+                                     (Q(user__following__from_user=request.user)&
+                                     Q(user__following__accepted=True)
+                                     )).order_by('-created')
         serializer=PostSerializer(queryset, many=True)
         return Response(serializer.data)
 

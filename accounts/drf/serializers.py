@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from accounts.models import User
+from accounts.models import User, Relation
 
 
 class AuthCustomTokenSerializer(serializers.Serializer):
@@ -45,3 +45,20 @@ class GetUsernameSerializer(serializers.ModelSerializer):
         model = User
         fields = ('pk','full_name')
         read_only_fields = ('pk','full_name')
+
+class GetMyProfileSerializer(serializers.ModelSerializer):
+    # accepted_following_count=serializers.SerializerMethodField()
+    class Meta:
+        model=User
+        fields=('pk','full_name','bio','status','follower_count','following_count')
+        read_only_fields = ('pk','full_name','bio','status','follower_count', 'following_count')
+
+    # def get_accepted_following_count(self,obj):
+    #     queryset=obj.following.all()
+    #     return AcceptedFollowingSerializer(instance=queryset)
+
+
+# class AcceptedFollowingSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model=Relation
+#         fields=('pk','from_user', 'to_user', 'accepted')

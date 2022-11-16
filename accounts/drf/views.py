@@ -10,7 +10,8 @@ from django.utils.text import slugify
 from django.shortcuts import get_object_or_404
 from accounts.models import User
 
-from .serializers import GetUsernameSerializer,AuthCustomTokenSerializer
+from .serializers import GetUsernameSerializer,AuthCustomTokenSerializer, GetMyProfileSerializer
+
 
 
 class ObtainAuthToken(APIView):
@@ -21,7 +22,6 @@ class ObtainAuthToken(APIView):
         MultiPartParser,
         JSONParser,
     )
-
     renderer_classes = (JSONRenderer,)
 
     def post(self, request):
@@ -29,19 +29,25 @@ class ObtainAuthToken(APIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
         token, created = Token.objects.get_or_create(user=user)
-
         content = {
             'token': unicode(token.key),
         }
-
         return Response(content)
 
 
 class GetUsername(APIView):
-
-    #  permission_classes = [IsAuthenticated,]
     permission_classes = [IsAuthenticated,]
+
     def get(self, request,user_id):
         queryset=get_object_or_404(User,pk=user_id)
         serializer=GetUsernameSerializer(queryset)
         return Response(serializer.data)
+
+
+class  GetMyProfile(APIView):
+    permission_classes = [IsAuthenticated,]
+    def get(self,request):
+        queryset=get_object_or_404(User,pk=request.user.id)
+        serializer=GetMyProfileSerializer(queryset)
+        return Response(serializer.data)
+

@@ -39,6 +39,21 @@ class User(AbstractBaseUser):
 		return True
 
 	@property
+	def follower_count(self):
+		count=0
+		for  f in self.follower.all():
+			if f.accepted==True:
+				count=count+1
+		return count
+	@property
+	def following_count(self):
+		count=0
+		for  f in self.following.all():
+			if f.accepted==True:
+				count=count+1
+		return count
+
+	@property
 	def is_staff(self):
 		return self.is_admin
 

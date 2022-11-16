@@ -12,6 +12,9 @@ class UserAdmin(BaseUserAdmin):
 	list_filter = ('is_admin',)
 	fieldsets = (
 		('Main', {'fields':('full_name', 'email', 'password')}),
+		( 'profile',{
+			'fields':('age','bio', 'phone', 'status')
+		}),
 		('Personal info', {'fields':('is_active',)}),
 		('Permissions', {'fields':('is_admin','private')})
 	)
@@ -19,9 +22,7 @@ class UserAdmin(BaseUserAdmin):
 		(None, {
 			'fields':('full_name', 'email', 'password1', 'password2')
 		}),
-		( 'profile',{
-			'fields':('age','bio', 'phone', 'status', 'activity', 'private')
-		}),
+		
 		( 'profile photo',{
 			'fields':('image',)
 		})
