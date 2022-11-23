@@ -54,6 +54,11 @@ class User(AbstractBaseUser):
 		return count
 
 	@property
+	def post_count(self):
+		return self.upost.count
+
+
+	@property
 	def is_staff(self):
 		return self.is_admin
 

@@ -7,7 +7,7 @@ from shop.models import Product
 
 class Post(models.Model):
     objects = models.Manager()
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE,related_name="upost")
     body = models.TextField(max_length=500)
     slug = models.SlugField(max_length=200, allow_unicode=True)
     created = models.DateTimeField(auto_now_add=True)

@@ -47,18 +47,9 @@ class GetUsernameSerializer(serializers.ModelSerializer):
         read_only_fields = ('pk','full_name')
 
 class GetMyProfileSerializer(serializers.ModelSerializer):
-    # accepted_following_count=serializers.SerializerMethodField()
     class Meta:
         model=User
-        fields=('pk','full_name','bio','status','follower_count','following_count')
-        read_only_fields = ('pk','full_name','bio','status','follower_count', 'following_count')
+        fields=('pk','full_name','bio','status','follower_count','following_count','post_count')
+        read_only_fields = ('pk','full_name','bio','status','follower_count', 'following_count','post_count')
 
-    # def get_accepted_following_count(self,obj):
-    #     queryset=obj.following.all()
-    #     return AcceptedFollowingSerializer(instance=queryset)
-
-
-# class AcceptedFollowingSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model=Relation
-#         fields=('pk','from_user', 'to_user', 'accepted')
+   
