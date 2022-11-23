@@ -1,4 +1,4 @@
-from accounts.models import User
+from accounts.models import User, ProfilePhoto
 from rest_framework import serializers
 
 from posts.models import Post, Comment
@@ -8,6 +8,8 @@ class PostSerializer(serializers.ModelSerializer):
     #image = serializers.ImageField(required=False)
     comments=serializers.SerializerMethodField()
     user_fields=serializers.SerializerMethodField()
+   
+
 
     class Meta:
         model = Post
@@ -22,6 +24,8 @@ class PostSerializer(serializers.ModelSerializer):
         result=obj.user
         return PostUserSerializers(instance=result).data
 
+    
+
 class PostCommentsSerializers(serializers.ModelSerializer):
     class Meta:
         model = Comment
@@ -31,7 +35,17 @@ class PostCommentsSerializers(serializers.ModelSerializer):
       
     
 class PostUserSerializers(serializers.ModelSerializer):
+    user_photo=serializers.SerializerMethodField()
     class Meta:
         model = User
-        fields=('pk','full_name','image')
-        read_only_fields = ('pk','full_name','image')
+        fields=('pk','full_name','user_photo')
+        read_only_fields = ('pk','full_name')
+
+    def get_user_photo(self,obj):
+        result=obj.uprofilephoto.all()
+        return UserProfilePhoto(instance=result,many=True).data
+
+class UserProfilePhoto(serializers.ModelSerializer):
+    class Meta:
+        model=ProfilePhoto
+        fields=('image',)

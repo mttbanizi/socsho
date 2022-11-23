@@ -62,6 +62,10 @@ class User(AbstractBaseUser):
 	def is_staff(self):
 		return self.is_admin
 
+	@property
+	def photo(self):
+		return self.uprofilephoto.image
+
 class ProfilePhoto(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='uprofilephoto')
 	image = models.ImageField(upload_to='user/%Y/%m/%d/', default='profile.jpg' )
