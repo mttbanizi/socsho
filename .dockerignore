@@ -1,0 +1,30 @@
+# Exclude files and directories from the Docker build context
+
+# Exclude version control files
+.git
+.svn
+.hg
+
+# Exclude build artifacts
+*.pyc
+*.pyo
+*.pyd
+__pycache__
+
+# Exclude development and editor files
+.dockerignore
+.vscode
+.idea
+
+# Exclude test and documentation files
+tests
+docs
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+
+**/migrations
+src/media
+src/db.sqlite3
+Procfile
+.git

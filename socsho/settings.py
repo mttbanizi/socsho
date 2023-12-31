@@ -115,7 +115,7 @@ DATABASES = {
         'USER': 'your_database_user',
         'PASSWORD': 'your_database_password',
         # Set the host if your PostgreSQL server is running on a different machine.
-        'HOST': 'localhost',
+        'HOST': 'db',
         # Use the default PostgreSQL port (5432) or set a different one if needed.
         'PORT': '5432',
     }
