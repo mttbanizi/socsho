@@ -55,7 +55,7 @@ INSTALLED_APPS = [
     'home.apps.HomeConfig',
     'chat',
     'single_message',
-    'search.apps.SearchConfig',
+    # 'search.apps.SearchConfig',
 
 ]
 
@@ -103,9 +103,17 @@ CHANNEL_LAYERS = {
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
 DATABASES = {
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': 'mydatabase',
+    # }
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'mydatabase',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'your_database_name',
+        'USER': 'your_database_user',
+        'PASSWORD': 'your_database_password',
+        'HOST': 'localhost',  # Set the host if your PostgreSQL server is running on a different machine.
+        'PORT': '',          # Use the default PostgreSQL port (5432) or set a different one if needed.
     }
 }
 
