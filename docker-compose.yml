@@ -1,10 +1,18 @@
 version: "3.9"
 
 services:
-  web:
-    image: nginx:latest
+  django-app:
+    build:
+      context: .
+      dockerfile: .docker
+
+    command: /app/entrypoint.sh
+    volumes:
+      - .:/app
     ports:
-      - "80:80"
+      - "8000:8000"
+    depends_on:
+      - db
 
   db:
     image: postgres:latest
@@ -13,10 +21,10 @@ services:
       POSTGRES_DB: your_database_name
       POSTGRES_USER: your_database_user
       POSTGRES_PASSWORD: your_database_password
-    ports:
-      - "5432:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data/
+    ports:
+      - "5432:5432"
 
   pgadmin:
     container_name: pgadmin4_container
@@ -26,7 +34,7 @@ services:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
       PGADMIN_DEFAULT_PASSWORD: 'pg_pass'
     ports:
-      - "5050:80"
+      - "5050:5050"
 
   # rabbitmq:
   #   image: "rabbitmq:alpine"

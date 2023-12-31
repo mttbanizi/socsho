@@ -1,30 +1,27 @@
-# This docker file is used for local development via docker-compose
-# Creating image based on official python3 image
-#  Use an official Python runtime as a parent image
-FROM python:3.9-slim
+# Use an official Python runtime as a parent image
+FROM python:3.9
 
 # Set environment variables
-ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE 1
 
 # Set the working directory in the container
 WORKDIR /app
 
-# Copy the requirements file into the container at /app
-COPY requirements.txt /app/
+# Copy the local code to the container
+COPY . /app
 
-# Install any needed packages specified in requirements.txt
-RUN pip install --upgrade pip && \
-    pip install -r requirements.txt
+# Install system dependencies
+RUN apt-get update \
+    && apt-get install -y postgresql-client \
+    && rm -rf /var/lib/apt/lists/*
 
-# Copy the current directory contents into the container at /app
-COPY . /app/
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Expose port 8000 for the Django development server
-EXPOSE 8000
+# Copy the entrypoint script into the container
+COPY ./wait-for-postgres.sh /app/wait-for-postgres.sh
+RUN chmod +x /app/wait-for-postgres.sh
 
-# Collect static files (if needed)
-# RUN python manage.py collectstatic --noinput
-
-# Run the Django development server
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+# Run the application
+CMD ["./wait-for-postgres.sh", "python", "manage.py", "runserver", "0.0.0.0:8000"]

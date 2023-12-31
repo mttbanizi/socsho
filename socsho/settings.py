@@ -10,8 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
+from django.utils.translation import gettext_lazy as _
 from pathlib import Path
-import  os
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,7 +27,8 @@ SECRET_KEY = 'django-insecure-p$jcd0&o$4j1#8_)g(ncns$hlh(85!ep#!@)m*7@x#kx%0mpm4
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['0.0.0.0','192.168.1.6', 'localhost', '127.0.0.1','10.0.2.2']
+ALLOWED_HOSTS = ['0.0.0.0', '192.168.1.6',
+                 'localhost', '127.0.0.1', '10.0.2.2']
 
 
 # Application definition
@@ -44,7 +46,7 @@ INSTALLED_APPS = [
     'rest_framework',
     # 'django_elasticsearch_dsl',
     'rest_framework.authtoken',
-    
+
 
     # apps
     'accounts.apps.AccountsConfig',
@@ -62,7 +64,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.locale.LocaleMiddleware', # new
+    'django.middleware.locale.LocaleMiddleware',  # new
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -112,15 +114,17 @@ DATABASES = {
         'NAME': 'your_database_name',
         'USER': 'your_database_user',
         'PASSWORD': 'your_database_password',
-        'HOST': 'localhost',  # Set the host if your PostgreSQL server is running on a different machine.
-        'PORT': '',          # Use the default PostgreSQL port (5432) or set a different one if needed.
+        # Set the host if your PostgreSQL server is running on a different machine.
+        'HOST': 'localhost',
+        # Use the default PostgreSQL port (5432) or set a different one if needed.
+        'PORT': '5432',
     }
 }
 
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
-AUTH_USER_MODEL='accounts.User'
+AUTH_USER_MODEL = 'accounts.User'
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -159,7 +163,6 @@ USE_TZ = True
 
 USE_L10N = True
 
-from django.utils.translation import gettext_lazy as _
 
 LANGUAGE_CODE = 'en'
 
@@ -189,21 +192,20 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-
-EMAIL_BACEND='django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'mttbanizi@gmail.com'
 EMAIL_PORT = 587
 EMAIL_HOST_PASSWORD = 'mtuqsicbzrvusszp'
 EMAIL_USE_TLS = True
-DEAFAULT_FROM_USER ='SOCSHO WEBSITE'
+DEAFAULT_FROM_USER = 'SOCSHO WEBSITE'
 
-#rest framework
+# rest framework
 REST_FRAMEWORK = {
-   'DEFAULT_AUTHENTICATION_CLASSES': (
-      'rest_framework.authentication.TokenAuthentication',
-   ),
-   'DEFAULT_PERMISSION_CLASSES': (
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAdminUser',
-   ),
+    ),
 }
