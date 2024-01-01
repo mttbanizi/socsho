@@ -4,7 +4,7 @@ services:
   django-app:
     build:
       context: .
-      dockerfile: .docker
+      dockerfile: .Dockerfile
 
     command: /app/entrypoint.sh
     volumes:
