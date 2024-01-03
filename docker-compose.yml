@@ -13,7 +13,7 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data/
     networks:
-      - my_network
+      - docker_my_network
 
   pgadmin:
     container_name: pgadmin4_container
@@ -25,7 +25,7 @@ services:
     ports:
       - "5050:5050"
     networks:
-      - my_network
+      - docker_my_network
 
   redis:
     image: redis:7
@@ -35,15 +35,26 @@ services:
     volumes:
       - redis-data:/data
     networks:
-      - my_network
+      - docker_my_network
+
+  django-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: /app/entrypoint.sh
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    networks:
+      - docker_my_network
 
 networks:
-  my_network:
+  docker_my_network:
     driver: bridge
 
 volumes:
   postgres-data:
   redis-data:
-
-
-
