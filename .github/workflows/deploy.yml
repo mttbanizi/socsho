@@ -12,6 +12,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Debug - List Files
+        run: |
+          ls -l
+          find .
+
       - name: Build Docker image
         run: docker build -t socsho-app -f Dockerfile .
 
