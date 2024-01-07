@@ -24,6 +24,9 @@ COPY ./wait-for-postgres.sh /app/wait-for-postgres.sh
 RUN chmod +x /app/wait-for-postgres.sh
 
 # Collect static files
+RUN sudo mkdir -p /var/www/static/
+# RUN sudo chown root:root /var/www/static/
+
 RUN python manage.py collectstatic --noinput
 
 # Expose Gunicorn port
