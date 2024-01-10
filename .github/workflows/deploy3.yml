@@ -16,10 +16,10 @@ jobs:
     - uses: mr-smithers-excellent/docker-build-push@v6
       name: Build & push Docker image
       with:
-        image: docker.io/socsho-app
+        image: socsho-app
         registry: docker.io
         dockerfile: Dockerfile
-        tags: v1, latest
+        tags: latest
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
