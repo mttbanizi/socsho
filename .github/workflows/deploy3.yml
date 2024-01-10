@@ -6,7 +6,7 @@ on:
       - deploy-docker
 
 jobs:
-  deploy:
+  build_and_push_image:
     runs-on: ubuntu-latest
 
     steps:
@@ -22,8 +22,16 @@ jobs:
 
     - name: Build and Push Docker Image
       run: |
-        docker build -t ${{ secrets.DOCKER_REGISTRY }}/socsho-app:latest .
-        docker push ${{ secrets.DOCKER_REGISTRY }}/socsho-app:latest
+        docker build -t docker.io/socsho-app:latest .
+        docker push docker.io/socsho-app:latest
+
+
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
 
     - name: Create Target Directory on Server
       run: |
