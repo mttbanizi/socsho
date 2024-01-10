@@ -3,7 +3,7 @@ name: Docker Deployment
 on:
   push:
     branches:
-      - main
+      - deploy-docker
 
 jobs:
   deploy:
@@ -37,7 +37,7 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         source: /home/runner/work/socsho/socsho
         target: ~/socsho-dev/docker/
-        
+
     - name: Inspect Temporary Archive
       run: tar -tvf /tmp/CoZGtYTzZs.tar.gz
 
