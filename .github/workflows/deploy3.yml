@@ -19,7 +19,7 @@ jobs:
         image: socsho-app
         registry: docker.io
         dockerfile: Dockerfile
-        tags: latest
+        
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
