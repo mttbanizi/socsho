@@ -23,5 +23,14 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY ./wait-for-postgres.sh /app/wait-for-postgres.sh
 RUN chmod +x /app/wait-for-postgres.sh
 
-# Run the application
-CMD ["./wait-for-postgres.sh", "python", "manage.py", "runserver", "0.0.0.0:8000"]
+# Collect static files
+RUN  mkdir -p /var/www/static/
+# RUN sudo chown root:root /var/www/static/
+
+RUN python manage.py collectstatic --noinput
+
+# Expose Gunicorn port
+EXPOSE 8000
+
+# Run the application with Gunicorn
+CMD ["gunicorn", "your_django_project.wsgi:application", "-b", "0.0.0.0:8000"]
