@@ -59,6 +59,7 @@ jobs:
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
+          port: 11511
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: /home/runner/work/socsho/socsho
           target: ~/socsho-dev/docker/
