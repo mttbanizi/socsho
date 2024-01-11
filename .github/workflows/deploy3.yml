@@ -45,7 +45,7 @@ jobs:
 
     - name: Create Target Directory on Server
       run: |
-        ssh -i ${{ secrets.SSH_PRIVATE_KEY }} ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }} "mkdir -p ~/socsho-dev/docker"
+        ssh -i ${{ secrets.SSH_PRIVATE_KEY }} -p 11511 ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }} "mkdir -p ~/socsho-dev/docker"
 
     - name: Copy Docker Compose File to Server
       uses: appleboy/scp-action@master
