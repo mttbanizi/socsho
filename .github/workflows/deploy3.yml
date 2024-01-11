@@ -10,53 +10,62 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v2
+      - name: Checkout Repository
+        uses: actions/checkout@v2
 
-    # - uses: mr-smithers-excellent/docker-build-push@v6
-    #   name: Build & push Docker image
-    #   with:
-    #     image: socsho-app
-    #     registry: docker.io
-    #     dockerfile: Dockerfile
-        
-    #     username: ${{ secrets.DOCKER_USERNAME }}
-    #     password: ${{ secrets.DOCKER_PASSWORD }}
+      # - uses: mr-smithers-excellent/docker-build-push@v6
+      #   name: Build & push Docker image
+      #   with:
+      #     image: socsho-app
+      #     registry: docker.io
+      #     dockerfile: Dockerfile
+          
+      #     username: ${{ secrets.DOCKER_USERNAME }}
+      #     password: ${{ secrets.DOCKER_PASSWORD }}
 
-    # - name: Login to Container Registry
-    #   uses: docker/login-action@v3
-    #   with:
-    #     registry: docker.io
-    #     username: ${{ secrets.DOCKER_USERNAME }}
-    #     password: ${{ secrets.DOCKER_PASSWORD }}
+      # - name: Login to Container Registry
+      #   uses: docker/login-action@v3
+      #   with:
+      #     registry: docker.io
+      #     username: ${{ secrets.DOCKER_USERNAME }}
+      #     password: ${{ secrets.DOCKER_PASSWORD }}
 
-    # - name: Build and Push Docker Image
-    #   run: |
-    #     docker build -t docker.io/socsho-app:latest .
-    #     docker push docker.io/socsho-app:latest
+      # - name: Build and Push Docker Image
+      #   run: |
+      #     docker build -t docker.io/socsho-app:latest .
+      #     docker push docker.io/socsho-app:latest
 
 
   deploy:
     runs-on: ubuntu-latest
     
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v2
+      - name: Checkout Repository
+        uses: actions/checkout@v2
 
-    ÷i ${{ secrets.SSH_PRIVATE_KEY }} -p 11511 root@91.107.159.250  "mkdir -p socsho-dev/docker"
+      - name: Create Remote Directory
+        run: |
+          ssh-keyscan -t rsa -p 11511 91.107.159.250 >> ~/.ssh/known_hosts
+          ssh -i ${{ secrets.SSH_PRIVATE_KEY }} -p 11511 root@91.107.159.250 "mkdir -p ~/socsho-dev/docker"
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
 
-    - name: Copy Docker Compose File to Server
-      uses: appleboy/scp-action@master
-      with:
-        host: ${{ secrets.SERVER_HOST }}
-        username: ${{ secrets.SERVER_USERNAME }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        source: /home/runner/work/socsho/socsho
-        target: ~/socsho-dev/docker/
+      # - name: Create Target Directory on Server
+      #   run: |
+      #     ssh -i ${{ secrets.SSH_PRIVATE_KEY }} -p 11511 root@91.107.159.250  "mkdir -p socsho-dev/docker"
 
-    - name: Inspect Temporary Archive
-      run: tar -tvf /tmp/CoZGtYTzZs.tar.gz
+      - name: Copy Docker Compose File to Server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: /home/runner/work/socsho/socsho
+          target: ~/socsho-dev/docker/
 
-    - name: Set up Docker Compose on Server
-      run: |
-        ssh  -i ${{ secrets.SSH_PRIVATE_KEY }} -p 11511 root@91.107.159.250 "cd ~/socsho-dev/docker/ && docker-compose -f docker-compose.prod.yml pull && docker-compose -f docker-compose.prod.yml up -d"
+      - name: Inspect Temporary Archive
+        run: tar -tvf /tmp/CoZGtYTzZs.tar.gz
+
+      - name: Set up Docker Compose on Server
+        run: |
+          ssh  -i ${{ secrets.SSH_PRIVATE_KEY }} -p 11511 root@91.107.159.250 "cd ~/socsho-dev/docker/ && docker-compose -f docker-compose.prod.yml pull && docker-compose -f docker-compose.prod.yml up -d"
