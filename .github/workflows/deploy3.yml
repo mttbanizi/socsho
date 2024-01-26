@@ -45,21 +45,21 @@ jobs:
 
       # - name: Create Remote Directory
       #   run: |
-      #     ssh-keyscan -t rsa -p 11511 91.107.159.250 >> ~/.ssh
-      #     ssh -i ${{ secrets.SSH_PRIVATE_KEY }} -p 11511 root@91.107.159.250 "mkdir -p ~/socsho-dev/docker"
+      #     ssh-keyscan -t rsa -p 11411 91.107.159.250 >> ~/.ssh
+      #     ssh -i ${{ secrets.SSH_PRIVATE_KEY }} -p 11411 root@91.107.159.250 "mkdir -p ~/socsho-dev/docker"
       #   env:
       #     SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
 
       # - name: Create Target Directory on Server
       #   run: |
-      #     ssh -i ${{ secrets.SSH_PRIVATE_KEY }} -p 11511 root@91.107.159.250  "mkdir -p socsho-dev/docker"
+      #     ssh -i ${{ secrets.SSH_PRIVATE_KEY }} -p 11411 root@91.107.159.250  "mkdir -p socsho-dev/docker"
 
       - name: Copy Docker Compose File to Server
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
-          port: 11511
+          port: 11411
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: /home/runner/work/socsho/socsho
           target: ~/socsho-dev/docker/
