@@ -1,12 +1,12 @@
 name: Build and Deploy Django with PostgreSQL with github
 
 on:
-#   push:
-#     branches:
-#       - deploy-docker
-  pull_request:
+  push:
     branches:
       - deploy-docker
+  # pull_request:
+  #   branches:
+  #     - deploy-docker
 
 jobs:
   build:
