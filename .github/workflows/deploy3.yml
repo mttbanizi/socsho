@@ -1,9 +1,9 @@
 name: Docker Deployment
 
 on:
-  push:
-    branches:
-      - deploy-docker
+  # push:
+  #   branches:
+  #     - deploy-docker
 
 jobs:
   build_and_push_image:
