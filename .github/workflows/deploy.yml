@@ -38,6 +38,8 @@ jobs:
           port: 11411
           script: |
             cd ~/socsho-dev/docker
+            git checkout deploy-docker
+            git pull origin deploy-docker
             docker-compose down
             docker-compose build
             docker-compose up -d
